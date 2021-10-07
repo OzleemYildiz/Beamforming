@@ -4,11 +4,11 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --time=48:00:00
 #SBATCH --mem=8GB
-#SBATCH --job-name=tree_read2
+#SBATCH --job-name=tree_read3
 #SBATCH --mail-type=END
 #SBATCH --mail-user=zy2043@nyu.edu
-#SBATCH --output=out_tree_read_2.out
-#SBATCH --error=tree_read_2.err
+#SBATCH --output=out_tree_read_3.out
+#SBATCH --error=tree_read_3.err
 
 module purge
 module load matlab/2020b

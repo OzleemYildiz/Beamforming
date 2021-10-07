@@ -1,6 +1,6 @@
 %%% Optimization of B 
-P = 2:4;
-L = 8:64;
+P = 2;
+L = 64;
 lpb = b_optimize(P,L);
 
 

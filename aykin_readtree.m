@@ -1,10 +1,11 @@
-trial =10;
+trial =1000000;
 
-%L = [8:26, 29:35];
+
+%L = [8:26, 28:35];
 %P = 2;
 
-%L = [8:26, 30];
-%P = 3;
+L = [8:26, 30];
+P = 3;
 
 %L = [8:24];
 %P = 4;
@@ -17,7 +18,7 @@ lpb = b_optimize(P,L);
 num_step_mlbs = zeros(1, length(lpb)); 
 
 for j = 1:length(lpb)
-    tree_aykin = load("~/Desktop/Beamforming_ICC/Beamforming/tree/aykin_tree_L" + lpb(j,1)  + "P" + lpb(j,2) + "B" + lpb(j,3) + ".mat");
+    tree_aykin = load("/scratch/zy2043/beamforming/Beamforming/tree/aykin_tree_L" + lpb(j,1)  + "P" + lpb(j,2) + "B" + lpb(j,3) + ".mat");
     for i=1:trial  
         location = [ones(1,lpb(j,2)), zeros(1,lpb(j,1)-lpb(j,2))];
         location = location(randperm(length(location))); 
@@ -28,5 +29,5 @@ for j = 1:length(lpb)
 end
 num_step_mlbs = num_step_mlbs./trial;
 
-save('num_step_aykin_2', 'num_step_mlbs');
-save('b_optimize2', 'lpb')
+save('num_step_aykin_3', 'num_step_mlbs');
+save('b_optimize3', 'lpb')
