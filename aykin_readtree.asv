@@ -1,8 +1,14 @@
 
+
+
 %L = [8:26, 28:35];
 %P = 2;
 
 trial =100000;
+
+L = 8:12;
+P = 4;
+
 
 L = [8:26, 30];
 P = 3;
@@ -29,6 +35,10 @@ for j = 1:length(lpb)
 end
 num_step_mlbs = num_step_mlbs./trial;
 
+<<<<<<< Updated upstream
 save('num_step_aykin_3', 'num_step_mlbs');
 save('b_optimize3', 'lpb')
-
+=======
+save('num_step_aykin_2', 'num_step_mlbs');
+%save('b_optimize2', 'lpb')
+>>>>>>> Stashed changes

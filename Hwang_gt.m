@@ -1,8 +1,17 @@
  % What if we use HWANG in 2 frequency with each having 2^{alpha} size
 
 function [beam_loc, n_steps] = Hwang_gt(n,m, valid_loc, beam_loc, location, n_steps)
+
+%     if n == m
+%         %Append the locations to check
+%         %But no need to check but I know that all of them are paths
+%         
+%         beam_loc = [beam_loc, valid_loc];
+%         return;
+%     end
+    
     if n == 0
-        return;
+        return
     end
     
     if m == 0

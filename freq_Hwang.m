@@ -11,6 +11,7 @@ function [beam_loc, n_steps] = freq_Hwang(n,m, valid_loc, beam_loc, location, n_
     if m == 0
         return
     end
+    
 
     if n <= 2*m-2
         %Exhaustive Search and I have 2 frequencies
