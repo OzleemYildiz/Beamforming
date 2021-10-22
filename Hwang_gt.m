@@ -5,7 +5,7 @@
  % When it's ACK, getting NACK : MD (False negative)
   % When it's NACK, getting ACK : FA (False positive)
 
-function [beam_loc, n_steps] = Hwang_gt(n,m, valid_loc, beam_loc, location, n_steps, pmd, pfa)
+function [beam_loc, n_steps, valid_loc] = Hwang_gt(n,m, valid_loc, beam_loc, location, n_steps, pmd, pfa)
 
 %     if n == m
 %         %Append the locations to check
@@ -57,14 +57,11 @@ function [beam_loc, n_steps] = Hwang_gt(n,m, valid_loc, beam_loc, location, n_st
             valid_loc = valid_loc(size_check+1: end);
             n = n-size_check;
             
-            [beam_loc, n_steps] = Hwang_gt(n,m, valid_loc, beam_loc, location, n_steps, pmd, pfa); 
+            [beam_loc, n_steps, valid_loc] = Hwang_gt(n,m, valid_loc, beam_loc, location, n_steps, pmd, pfa); 
      
                 
         else
             %Parallel Binary Splitting
-            if size(valid_loc) < size_check
-                ozzy =1 ;
-            end
             
             [beam_loc, test_n1, n,m, valid_loc] = binary_split(n, m, location, valid_loc ,size_check, beam_loc, 0, pmd, pfa);
             
@@ -72,7 +69,7 @@ function [beam_loc, n_steps] = Hwang_gt(n,m, valid_loc, beam_loc, location, n_st
             %size again
             n_steps = n_steps +test_n1-1;
       
-            [beam_loc, n_steps] = Hwang_gt(n,m, valid_loc, beam_loc, location, n_steps, pmd, pfa); 
+            [beam_loc, n_steps, valid_loc] = Hwang_gt(n,m, valid_loc, beam_loc, location, n_steps, pmd, pfa); 
        
         end
     end
