@@ -26,7 +26,7 @@ function [beam_loc, n_steps, valid_loc] = Hwang_gt(n,m, valid_loc, beam_loc, loc
     if n <= 2*m-2
         %Exhaustive Search and I have 2 frequencies
         n_steps = n_steps + ceil(n/2); 
-        beam_loc = [beam_loc, find(location(valid_loc)==1)]; 
+        beam_loc = [beam_loc, valid_loc(find(location(valid_loc)==1))]; 
         return;
     else
         l = n - m +1;
