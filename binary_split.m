@@ -13,6 +13,9 @@ function [beam_loc, test_n, n,m, valid_loc] = binary_split(n, m, location, valid
         size_check = n;
     end
     
+    if isempty(valid_loc)
+        return
+    end
 
     check =  sum(location(valid_loc(1:size_check)) == 0) == size_check; %NACK is 1
     test_n = n_tests +1;
@@ -32,7 +35,7 @@ function [beam_loc, test_n, n,m, valid_loc] = binary_split(n, m, location, valid
             valid_loc = valid_loc(size_check+1:end);
             n = n-1;
             m = m-1;
-        elseif n > 1 && size(valid_loc,2) > 1 %NACK so other one is ACK
+        elseif n == 2 && size(valid_loc,2) > 1 %NACK so other one is ACK
             beam_loc = [beam_loc, valid_loc(size_check+1)];
             valid_loc = valid_loc(size_check+2:end);
             n =n -2;
@@ -40,6 +43,10 @@ function [beam_loc, test_n, n,m, valid_loc] = binary_split(n, m, location, valid
         elseif check && n ==1 % There was an error, we ended without finding the beam
             valid_loc = valid_loc(size_check+1:end);
             n = n-1;
+        elseif check 
+            valid_loc = valid_loc(size_check+1:end);
+            n = n-1;
+            [beam_loc, test_n, n, m, valid_loc] = binary_split(n, m, location, valid_loc, 1, beam_loc, test_n, pmd, pfa);
         end
         
      elseif check
