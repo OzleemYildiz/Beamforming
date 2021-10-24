@@ -24,16 +24,37 @@ function [beam_loc, n_steps, valid_loc] = Hwang_gt(n,m, valid_loc, beam_loc, loc
     end
 
     if n <= 2*m-2
-        %Exhaustive Search and I have 2 frequencies
-        n_steps = n_steps + n; 
-        beam_loc = [beam_loc, valid_loc(find(location(valid_loc)==1))]; 
+        %Exhaustive Search
+        size_n = n;
+        for ex = 1:size_n
+            n_steps = n_steps +1;
+            check_ex = location(valid_loc(ex)) == 0; %=0 ACK
+            pe = rand(1,1);
+            
+            if check_ex == 0 && pe< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
+                check_ex = 1;
+            elseif  check_ex && pe< pfa
+                check_ex = 0;
+            end
+            
+            if check_ex == 0 %ACK
+                beam_loc = [beam_loc, valid_loc(ex)];
+                m = m-1;
+                n= n-1;
+            end
+            if m ==0
+                valid_loc = valid_loc(ex+1:end);
+                return;
+            end    
+        end      
+        valid_loc = []; %I checked every one of them but m is still not 0. 
         return;
     else
         l = n - m +1;
         alpha = floor(log2(l/m));
         size_check = 2^alpha;
         
-        % I ADDED A CONDITION
+        % I ADDED A CONDITION --- this reduces to bisection
         if size_check >=n
             size_check = ceil(n/2);
         end

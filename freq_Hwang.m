@@ -19,8 +19,47 @@ function [beam_loc, n_steps] = freq_Hwang(n,m, valid_loc, beam_loc, location, n_
 
     if n <= 2*m-2
         %Exhaustive Search and I have 2 frequencies
-        n_steps = n_steps + ceil(n/2); 
-        beam_loc = [beam_loc, valid_loc(find(location(valid_loc)==1))]; 
+        size_n = n;
+        for ex = 1:2:size_n
+            n_steps = n_steps +1;
+            check_ex_1 = location(valid_loc(ex)) == 0; % =0 ,ACK
+            pe = rand(1,1);
+            
+            if check_ex_1 == 0 && pe< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
+                check_ex_1 = 1;
+            elseif  check_ex_1 && pe< pfa
+                check_ex_1 = 0;
+            end
+            
+            
+            if check_ex_1 == 0 %ACK
+                beam_loc = [beam_loc, valid_loc(ex)];
+                m = m-1;
+                n= n-1;
+            end
+            if ex+1 <= length(valid_loc)
+                check_ex_2 = location(valid_loc(ex+1)) == 0; % =0 ,ACK
+                pe = rand(1,1);
+
+                if check_ex_2 == 0 && pe< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
+                    check_ex_2 = 1;
+                elseif  check_ex_2 && pe< pfa
+                    check_ex_2 = 0;
+                end
+                
+                
+                if check_ex_2 ==0
+                    beam_loc = [beam_loc, valid_loc(ex+1)];
+                    m = m-1;
+                    n= n-1;
+                end
+            end
+            if m ==0
+                valid_loc = valid_loc(ex+1:end);
+                return;
+            end    
+        end      
+        valid_loc = []; %I checked every one of them but m is still not 0. 
         return;
     else
         l = n - m +1;
