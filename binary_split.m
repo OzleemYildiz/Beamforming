@@ -9,8 +9,8 @@ function [beam_loc, test_n, n,m, valid_loc] = binary_split(n, m, location, valid
         return
     end
     
-    if n < size_check % Sometimes it's not balanced because of error
-        size_check = n;
+    if length(valid_loc) < size_check % Sometimes it's not balanced because of error
+        size_check = length(valid_loc);
     end
     
     if isempty(valid_loc)
@@ -36,6 +36,11 @@ function [beam_loc, test_n, n,m, valid_loc] = binary_split(n, m, location, valid
             n = n-1;
             m = m-1;
         elseif n == 2 && size(valid_loc,2) > 1 %NACK so other one is ACK
+            beam_loc = [beam_loc, valid_loc(size_check+1)];
+            valid_loc = valid_loc(size_check+2:end);
+            n =n -2;
+            m = m-1;
+        elseif  size(valid_loc,2) == 2
             beam_loc = [beam_loc, valid_loc(size_check+1)];
             valid_loc = valid_loc(size_check+2:end);
             n =n -2;

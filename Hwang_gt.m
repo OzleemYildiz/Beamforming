@@ -25,7 +25,7 @@ function [beam_loc, n_steps, valid_loc] = Hwang_gt(n,m, valid_loc, beam_loc, loc
 
     if n <= 2*m-2
         %Exhaustive Search and I have 2 frequencies
-        n_steps = n_steps + ceil(n/2); 
+        n_steps = n_steps + n; 
         beam_loc = [beam_loc, valid_loc(find(location(valid_loc)==1))]; 
         return;
     else
@@ -63,8 +63,9 @@ function [beam_loc, n_steps, valid_loc] = Hwang_gt(n,m, valid_loc, beam_loc, loc
         else
             %Parallel Binary Splitting
             
-            [beam_loc, test_n1, n,m, valid_loc] = binary_split(n, m, location, valid_loc ,size_check, beam_loc, 0, pmd, pfa);
+            [beam_loc, test_n1, n,m, valid_loc_1] = binary_split(n, m, location, valid_loc(1:size_check) ,size_check, beam_loc, 0, pmd, pfa);
             
+            valid_loc = [valid_loc_1, valid_loc(size_check+1:end)];
             %Note that I count one more in binary split. I check the same
             %size again
             n_steps = n_steps +test_n1-1;
