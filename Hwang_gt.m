@@ -23,12 +23,39 @@ function [beam_loc, n_steps, valid_loc] = Hwang_gt(n,m, valid_loc, beam_loc, loc
         return
     end
 
+%     if n == 1
+%         if location(valid_loc) == 1 %ACK
+%             beam_loc = [beam_loc, valid_loc];
+%         end
+%         return;
+%     end
+%     
+%     if n==m
+%         beam_loc = [beam_loc, valid_loc];
+%         return;
+%     end
+%     
+    
+    
     if n <= 2*m-2
         %Exhaustive Search
         size_n = n;
         for ex = 1:size_n
-            n_steps = n_steps +1;
+            
+            if n == m
+                beam_loc = [beam_loc, valid_loc];
+                valid_loc = [];
+                return;
+            end
+            
+            if m ==0
+                valid_loc = valid_loc(ex+1:end);
+                return;
+            end 
+           
             check_ex = location(valid_loc(ex)) == 0; %=0 ACK
+             n_steps = n_steps +1;
+            n= n-1;
             pe = rand(1,1);
             
             if check_ex == 0 && pe< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
@@ -40,12 +67,8 @@ function [beam_loc, n_steps, valid_loc] = Hwang_gt(n,m, valid_loc, beam_loc, loc
             if check_ex == 0 %ACK
                 beam_loc = [beam_loc, valid_loc(ex)];
                 m = m-1;
-                n= n-1;
             end
-            if m ==0
-                valid_loc = valid_loc(ex+1:end);
-                return;
-            end    
+            
         end      
         valid_loc = []; %I checked every one of them but m is still not 0. 
         return;
@@ -85,7 +108,9 @@ function [beam_loc, n_steps, valid_loc] = Hwang_gt(n,m, valid_loc, beam_loc, loc
             %Parallel Binary Splitting
             
             [beam_loc, test_n1, n,m, valid_loc_1] = binary_split(n, m, location, valid_loc(1:size_check) ,size_check, beam_loc, 0, pmd, pfa);
-            
+            if test_n1 > alpha +1
+                ozzy = 1;
+            end
             valid_loc = [valid_loc_1, valid_loc(size_check+1:end)];
             %Note that I count one more in binary split. I check the same
             %size again

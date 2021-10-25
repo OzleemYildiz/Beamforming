@@ -2,6 +2,12 @@ function [beam_loc, n_steps] = exhaustive_hybrid(n, m, location, pmd, pfa)
     beam_loc = {};
     n_steps= 0;
     for ex = 1:2:n
+        if m ==0
+            return;
+        end  
+        
+        
+        
         n_steps = n_steps +1;
         check_ex_1 = location(ex) == 0; % =0 ,ACK
         pe = rand(1,1);
@@ -17,6 +23,7 @@ function [beam_loc, n_steps] = exhaustive_hybrid(n, m, location, pmd, pfa)
             beam_loc = [beam_loc, ex];
             m = m-1;
         end
+        
         if ex+1 <= n
             check_ex_2 = location(ex+1) == 0; % =0 ,ACK
             pe = rand(1,1);
@@ -33,9 +40,6 @@ function [beam_loc, n_steps] = exhaustive_hybrid(n, m, location, pmd, pfa)
                 m = m-1;
             end
         end
-        if m ==0
-            return;
-        end  
 
     end
 end

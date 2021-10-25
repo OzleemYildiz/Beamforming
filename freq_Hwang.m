@@ -16,13 +16,28 @@ function [beam_loc, n_steps] = freq_Hwang(n,m, valid_loc, beam_loc, location, n_
         return
     end
     
+    if n==m
+        beam_loc = [beam_loc, valid_loc];
+        return;
+    end
 
     if n <= 2*m-2
         %Exhaustive Search and I have 2 frequencies
         size_n = n;
         for ex = 1:2:size_n
+           if m ==0
+                valid_loc = valid_loc(ex+1:end);
+                return;
+           end 
+           if n == m
+                beam_loc = [beam_loc, valid_loc];
+                valid_loc = [];
+                return;
+           end
+            
             n_steps = n_steps +1;
             check_ex_1 = location(valid_loc(ex)) == 0; % =0 ,ACK
+            n = n-1;
             pe = rand(1,1);
             
             if check_ex_1 == 0 && pe< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
@@ -35,12 +50,12 @@ function [beam_loc, n_steps] = freq_Hwang(n,m, valid_loc, beam_loc, location, n_
             if check_ex_1 == 0 %ACK
                 beam_loc = [beam_loc, valid_loc(ex)];
                 m = m-1;
-                n= n-1;
             end
             if ex+1 <= length(valid_loc)
                 check_ex_2 = location(valid_loc(ex+1)) == 0; % =0 ,ACK
                 pe = rand(1,1);
-
+                n = n-1;
+                
                 if check_ex_2 == 0 && pe< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
                     check_ex_2 = 1;
                 elseif  check_ex_2 && pe< pfa
@@ -51,13 +66,8 @@ function [beam_loc, n_steps] = freq_Hwang(n,m, valid_loc, beam_loc, location, n_
                 if check_ex_2 ==0
                     beam_loc = [beam_loc, valid_loc(ex+1)];
                     m = m-1;
-                    n= n-1;
                 end
-            end
-            if m ==0
-                valid_loc = valid_loc(ex+1:end);
-                return;
-            end    
+            end   
         end      
         valid_loc = []; %I checked every one of them but m is still not 0. 
         return;
