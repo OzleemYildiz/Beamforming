@@ -14,7 +14,7 @@ function [beam_loc, n_steps] = freq_GT_hwang_nocomingback(n,m, valid_loc, beam_l
         return
     end
     
-    if m == 0
+    if m <= 0
         return
     end
     
@@ -97,10 +97,12 @@ function [beam_loc, n_steps] = freq_GT_hwang_nocomingback(n,m, valid_loc, beam_l
             check1 = 0;
         end
         
+        save('aaa')
         %NACK for the second part of a size of 2^alpha
         hold = length(valid_loc(size_check+1: min(2*size_check, end)));
         a_hold = floor(log2(hold));
         hold = 2^a_hold;
+
         
         check2 = sum(location(valid_loc(size_check+1: size_check+hold)) == 0)== hold;
         n_steps = n_steps + 1;
