@@ -4,17 +4,22 @@ function [beam_loc, n_steps] = exhaustive_hybrid(n, m, location, pmd, pfa)
     for ex = 1:2:n
         if m ==0
             return;
-        end  
+        end 
         
-        
+        if ex == n-m+1
+           beam_loc = [beam_loc, ex:n]; 
+           return;
+        end
+               
         
         n_steps = n_steps +1;
         check_ex_1 = location(ex) == 0; % =0 ,ACK
-        pe = rand(1,1);
-
-        if check_ex_1 == 0 && pe< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
+        pe1 = rand(1,1);
+        pe2 = rand(1,1);
+        
+        if check_ex_1 == 0 && pe1< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
             check_ex_1 = 1;
-        elseif  check_ex_1 && pe< pfa
+        elseif  check_ex_1 && pe2< pfa
             check_ex_1 = 0;
         end
 
@@ -26,11 +31,12 @@ function [beam_loc, n_steps] = exhaustive_hybrid(n, m, location, pmd, pfa)
         
         if ex+1 <= n
             check_ex_2 = location(ex+1) == 0; % =0 ,ACK
-            pe = rand(1,1);
-
-            if check_ex_2 == 0 && pe< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
+            pe1 = rand(1,1);
+            pe2 = rand(1,1);
+            
+            if check_ex_2 == 0 && pe1< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
                 check_ex_2 = 1;
-            elseif  check_ex_2 && pe< pfa
+            elseif  check_ex_2 && pe2< pfa
                 check_ex_2 = 0;
             end
 

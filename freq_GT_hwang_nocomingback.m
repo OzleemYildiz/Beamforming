@@ -40,11 +40,12 @@ function [beam_loc, n_steps] = freq_GT_hwang_nocomingback(n,m, valid_loc, beam_l
             n_steps = n_steps +1;
             check_ex_1 = location(valid_loc(ex)) == 0; % =0 ,ACK
             n = n-1;
-            pe = rand(1,1);
+            pe1 = rand(1,1);
+            pe2=  rand(1,1);
             
-            if check_ex_1 == 0 && pe< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
+            if check_ex_1 == 0 && pe1< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
                 check_ex_1 = 1;
-            elseif  check_ex_1 && pe< pfa
+            elseif  check_ex_1 && pe2< pfa
                 check_ex_1 = 0;
             end
             
@@ -55,12 +56,13 @@ function [beam_loc, n_steps] = freq_GT_hwang_nocomingback(n,m, valid_loc, beam_l
             end
             if ex+1 <= length(valid_loc)
                 check_ex_2 = location(valid_loc(ex+1)) == 0; % =0 ,ACK
-                pe = rand(1,1);
+                pe1 = rand(1,1);
+                pe2=  rand(1,1);
                 n = n-1;
                 
-                if check_ex_2 == 0 && pe< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
+                if check_ex_2 == 0 && pe1< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
                     check_ex_2 = 1;
-                elseif  check_ex_2 && pe< pfa
+                elseif  check_ex_2 && pe2< pfa
                     check_ex_2 = 0;
                 end
                 
@@ -90,14 +92,14 @@ function [beam_loc, n_steps] = freq_GT_hwang_nocomingback(n,m, valid_loc, beam_l
         check1 = sum(location(valid_loc(1: size_check)) == 0)== size_check;
         
         % The impact of noise with respect to pmd and pfa
-        pe = rand(1,1);
-        if check1 == 0 && pe< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
+        pe1 = rand(1,1);
+        pe2=  rand(1,1);
+        if check1 == 0 && pe1< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
             check1 = 1;
-        elseif  check1 && pe< pfa
+        elseif  check1 && pe2< pfa
             check1 = 0;
         end
-        
-        save('aaa')
+
         %NACK for the second part of a size of 2^alpha
         hold = length(valid_loc(size_check+1: min(2*size_check, end)));
         a_hold = floor(log2(hold));
@@ -108,10 +110,11 @@ function [beam_loc, n_steps] = freq_GT_hwang_nocomingback(n,m, valid_loc, beam_l
         n_steps = n_steps + 1;
         
         % The impact of noise with respect to pmd and pfa
-        pe = rand(1,1);
-        if check2 == 0 && pe< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
+        pe1 = rand(1,1);
+        pe2=  rand(1,1);
+        if check2 == 0 && pe1< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
             check2 = 1;
-        elseif  check2 && pe< pfa
+        elseif  check2 && pe2< pfa
             check2 = 0;
         end
         
@@ -191,10 +194,11 @@ function [beam_loc, n_steps] = freq_GT_hwang_nocomingback(n,m, valid_loc, beam_l
                 check_in = sum(location(valid_loc(hold +1:hold +hold_2)) == 0)== hold_2;
                 n_test_in = 1;
                 
-                pe = rand(1,1);
-                if check_in == 0 && pe< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
+                pe1 = rand(1,1);
+                pe2=  rand(1,1);
+                if check_in == 0 && pe1< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
                     check_in = 1;
-                elseif  check_in && pe< pfa
+                elseif  check_in && pe2< pfa
                     check_in = 0;
                 end
                 
@@ -204,10 +208,11 @@ function [beam_loc, n_steps] = freq_GT_hwang_nocomingback(n,m, valid_loc, beam_l
                  if isempty(valid_loc(hold+1+hold_2:end))==0 %Not empty so let me check
                     size_more = length(valid_loc(hold+1+hold_2:end));
                     check_more = sum(location(valid_loc(hold+1+hold_2:end)) == 0)== size_more; %NACK
-                    pe = rand(1,1);
-                    if check_more == 0 && pe< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
+                    pe1 = rand(1,1);
+                    pe2=  rand(1,1);
+                    if check_more == 0 && pe1< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
                         check_more = 1;
-                    elseif  check_in && pe< pfa
+                    elseif  check_in && pe2< pfa
                         check_more = 0;
                     end
                     
@@ -260,10 +265,11 @@ function [beam_loc, n_steps] = freq_GT_hwang_nocomingback(n,m, valid_loc, beam_l
             
             if hold_2 ~= 0
                 check_in = sum(location(valid_loc(size_check+1:size_check+hold_2)) == 0)== hold_2;
-                pe = rand(1,1);
-                if check_in == 0 && pe< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
+                pe1 = rand(1,1);
+                pe2=  rand(1,1);
+                if check_in == 0 && pe1< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
                     check_in = 1;
-                elseif  check_in && pe< pfa
+                elseif  check_in && pe2< pfa
                     check_in = 0;
                 end
                 
@@ -273,10 +279,11 @@ function [beam_loc, n_steps] = freq_GT_hwang_nocomingback(n,m, valid_loc, beam_l
                     if isempty(valid_loc(size_check+1+hold_2:end))==0 %Not empty so let me check
                         size_more = length(valid_loc(size_check+1+hold_2:end));
                         check_more = sum(location(valid_loc(size_check+1+hold_2:end)) == 0)== size_more; %NACK
-                        pe = rand(1,1);
-                        if check_more == 0 && pe< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
+                        pe1 = rand(1,1);
+                        pe2=  rand(1,1);
+                        if check_more == 0 && pe1< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
                             check_more = 1;
-                        elseif  check_in && pe< pfa
+                        elseif  check_in && pe2< pfa
                             check_more = 0;
                         end
                         

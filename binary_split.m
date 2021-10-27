@@ -21,10 +21,11 @@ function [beam_loc, test_n, n,m, valid_loc] = binary_split(n, m, location, valid
     test_n = n_tests +1;
     
      % The impact of noise with respect to pmd and pfa
-    pe = rand(1,1);
-    if check == 0 && pe< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
+    pe1 = rand(1,1);
+    pe2=  rand(1,1);
+    if check == 0 && pe1< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
         check = 1;
-    elseif  check && pe< pfa
+    elseif  check && pe2< pfa
         check = 0;
     end
     

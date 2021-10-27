@@ -5,7 +5,7 @@
  % When it's ACK, getting NACK : MD (False negative)
   % When it's NACK, getting ACK : FA (False positive)
 
-function [beam_loc, n_steps, valid_loc] = Hwang_gt(n,m, valid_loc, beam_loc, location, n_steps, pmd, pfa)
+function [beam_loc, n_steps, valid_loc] = Hwang_gt(n,m, valid_loc, beam_loc, location, n_steps, pmd, pfa, sp)
 
 %     if n == m
 %         %Append the locations to check
@@ -23,18 +23,12 @@ function [beam_loc, n_steps, valid_loc] = Hwang_gt(n,m, valid_loc, beam_loc, loc
         return
     end
 
-%     if n == 1
-%         if location(valid_loc) == 1 %ACK
-%             beam_loc = [beam_loc, valid_loc];
-%         end
-%         return;
-%     end
-%     
-%     if n==m
-%         beam_loc = [beam_loc, valid_loc];
-%         return;
-%     end
-%     
+    if sp ~=1
+        if n==m
+            beam_loc = [beam_loc, valid_loc];
+            return;
+        end
+    end
     
     
     if n <= 2*m-2
@@ -42,11 +36,11 @@ function [beam_loc, n_steps, valid_loc] = Hwang_gt(n,m, valid_loc, beam_loc, loc
         size_n = n;
         for ex = 1:size_n
             
-            if n == m
-                beam_loc = [beam_loc, valid_loc];
-                valid_loc = [];
-                return;
-            end
+%             if n == m
+%                 beam_loc = [beam_loc, valid_loc];
+%                 valid_loc = [];
+%                 return;
+%             end
             
             if m ==0
                 valid_loc = valid_loc(ex+1:end);
@@ -56,11 +50,12 @@ function [beam_loc, n_steps, valid_loc] = Hwang_gt(n,m, valid_loc, beam_loc, loc
             check_ex = location(valid_loc(ex)) == 0; %=0 ACK
              n_steps = n_steps +1;
             n= n-1;
-            pe = rand(1,1);
+            pe1 = rand(1,1);
+            pe2=  rand(1,1);
             
-            if check_ex == 0 && pe< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
+            if check_ex == 0 && pe1< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
                 check_ex = 1;
-            elseif  check_ex && pe< pfa
+            elseif  check_ex && pe2< pfa
                 check_ex = 0;
             end
             
@@ -88,10 +83,11 @@ function [beam_loc, n_steps, valid_loc] = Hwang_gt(n,m, valid_loc, beam_loc, loc
         n_steps = n_steps + 1;
         
         % The impact of noise with respect to pmd and pfa
-        pe = rand(1,1);
-        if check1 == 0 && pe< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
+        pe1 = rand(1,1);
+        pe2=  rand(1,1);
+        if check1 == 0 && pe1< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
             check1 = 1;
-        elseif  check1 && pe< pfa
+        elseif  check1 && pe2< pfa
             check1 = 0;
         end
         
@@ -101,7 +97,7 @@ function [beam_loc, n_steps, valid_loc] = Hwang_gt(n,m, valid_loc, beam_loc, loc
             valid_loc = valid_loc(size_check+1: end);
             n = n-size_check;
             
-            [beam_loc, n_steps, valid_loc] = Hwang_gt(n,m, valid_loc, beam_loc, location, n_steps, pmd, pfa); 
+            [beam_loc, n_steps, valid_loc] = Hwang_gt(n,m, valid_loc, beam_loc, location, n_steps, pmd, pfa, sp); 
      
                 
         else
@@ -116,7 +112,7 @@ function [beam_loc, n_steps, valid_loc] = Hwang_gt(n,m, valid_loc, beam_loc, loc
             %size again
             n_steps = n_steps +test_n1-1;
       
-            [beam_loc, n_steps, valid_loc] = Hwang_gt(n,m, valid_loc, beam_loc, location, n_steps, pmd, pfa); 
+            [beam_loc, n_steps, valid_loc] = Hwang_gt(n,m, valid_loc, beam_loc, location, n_steps, pmd, pfa, sp); 
        
         end
     end

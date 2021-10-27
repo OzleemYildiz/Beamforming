@@ -38,11 +38,13 @@ function [beam_loc, n_steps] = freq_Hwang(n,m, valid_loc, beam_loc, location, n_
             n_steps = n_steps +1;
             check_ex_1 = location(valid_loc(ex)) == 0; % =0 ,ACK
             n = n-1;
-            pe = rand(1,1);
             
-            if check_ex_1 == 0 && pe< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
+            pe1 = rand(1,1);
+            pe2=  rand(1,1);
+            
+            if check_ex_1 == 0 && pe1< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
                 check_ex_1 = 1;
-            elseif  check_ex_1 && pe< pfa
+            elseif  check_ex_1 && pe2< pfa
                 check_ex_1 = 0;
             end
             
@@ -53,12 +55,14 @@ function [beam_loc, n_steps] = freq_Hwang(n,m, valid_loc, beam_loc, location, n_
             end
             if ex+1 <= length(valid_loc)
                 check_ex_2 = location(valid_loc(ex+1)) == 0; % =0 ,ACK
-                pe = rand(1,1);
+                
                 n = n-1;
                 
-                if check_ex_2 == 0 && pe< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
+                pe1 = rand(1,1);
+                pe2=  rand(1,1);
+                if check_ex_2 == 0 && pe1< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
                     check_ex_2 = 1;
-                elseif  check_ex_2 && pe< pfa
+                elseif  check_ex_2 && pe2< pfa
                     check_ex_2 = 0;
                 end
                 
@@ -86,10 +90,11 @@ function [beam_loc, n_steps] = freq_Hwang(n,m, valid_loc, beam_loc, location, n_
         check1 = sum(location(valid_loc(1: size_check)) == 0)== size_check;
         
         % The impact of noise with respect to pmd and pfa
-        pe = rand(1,1);
-        if check1 == 0 && pe< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
+        pe1 = rand(1,1);
+        pe2=  rand(1,1);
+        if check1 == 0 && pe1< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
             check1 = 1;
-        elseif  check1 && pe< pfa
+        elseif  check1 && pe2< pfa
             check1 = 0;
         end
         
@@ -99,10 +104,11 @@ function [beam_loc, n_steps] = freq_Hwang(n,m, valid_loc, beam_loc, location, n_
         n_steps = n_steps + 1;
         
         % The impact of noise with respect to pmd and pfa
-        pe = rand(1,1);
-        if check2 == 0 && pe< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
+        pe1 = rand(1,1);
+        pe2=  rand(1,1);
+        if check2 == 0 && pe1< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
             check2 = 1;
-        elseif  check2 && pe< pfa
+        elseif  check2 && pe2< pfa
             check2 = 0;
         end
         
