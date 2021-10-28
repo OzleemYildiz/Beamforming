@@ -6,10 +6,10 @@ function [beam_loc, n_steps] = exhaustive_hybrid(n, m, location, pmd, pfa)
             return;
         end 
         
-        if ex == n-m+1
-           beam_loc = [beam_loc, ex:n]; 
-           return;
-        end
+%         if ex == n-m+1
+%            beam_loc = [beam_loc, ex:n]; 
+%            return;
+%         end
                
         
         n_steps = n_steps +1;

@@ -16,10 +16,10 @@ function [beam_loc, n_steps] = freq_Hwang(n,m, valid_loc, beam_loc, location, n_
         return
     end
     
-    if n==m
-        beam_loc = [beam_loc, valid_loc];
-        return;
-    end
+%     if n==m
+%         beam_loc = [beam_loc, valid_loc];
+%         return;
+%     end
 
     if n <= 2*m-2
         %Exhaustive Search and I have 2 frequencies
@@ -29,11 +29,11 @@ function [beam_loc, n_steps] = freq_Hwang(n,m, valid_loc, beam_loc, location, n_
                 valid_loc = valid_loc(ex+1:end);
                 return;
            end 
-           if n == m
-                beam_loc = [beam_loc, valid_loc];
-                valid_loc = [];
-                return;
-           end
+%            if n == m
+%                 beam_loc = [beam_loc, valid_loc];
+%                 valid_loc = [];
+%                 return;
+%            end
             
             n_steps = n_steps +1;
             check_ex_1 = location(valid_loc(ex)) == 0; % =0 ,ACK
@@ -159,7 +159,7 @@ function [beam_loc, n_steps] = freq_Hwang(n,m, valid_loc, beam_loc, location, n_
         end
         
         
-        if check1 || check2 && size_check~=1
+        if (check1 || check2) && size_check~=1
             [beam_loc, n_steps] = freq_Hwang(n,m, valid_loc, beam_loc, location, n_steps, pmd, pfa); 
             
         elseif check1 == 0 && check2 == 0 && size_check~=1 % Both side has 1
