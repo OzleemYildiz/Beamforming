@@ -1,15 +1,17 @@
-N = 8:2:64;
-m = 2:4; %defective, %clusters
-threshold= [3, 6.5, 13];
+method =1;
+N = 8:4:64;
+m = 2; %defective, %clusters
+threshold= [3, 6.5, 13, 20];
 
 
 
-trial = 500000;
+trial = 50000;
 
 
+number_of_test_hwang =zeros(length(m),length(N), length(threshold));
 number_of_test_hex =zeros(length(m),length(N), length(threshold));
-blockage_hex = zeros(length(m),length(N),  length(threshold));
-md_hex = zeros(length(m), length(N), length(threshold));
+blockage = zeros(length(m),length(N),  length(threshold));
+md = zeros(length(m), length(N), length(threshold));
 
 for k = 1:length(N)
     resolution = (2*pi/N(k));
@@ -38,9 +40,16 @@ for k = 1:length(N)
                 %codebook for[0, pi]    
                 % Again create a location array for indeces in beamforming 
                 location(true_loc)=1;
+                
+                 if method == 1    
+                    [beam_loc, n_steps] = exhaustive_hybrid_5g(total_codebook, m(j), location, gain_gaussian, angle_ue, threshold(i));
+                    number_of_test_hex(j,k,i) = number_of_test_hex(j,k,i) + n_steps;
+                elseif method ==2
+                    [beam_loc, n_steps, valid_loc] = hwang_5g(total_codebook,m(j), 1:total_codebook,{}, location, 0, 1, gain_gaussian, angle_ue, threshold);
+                     number_of_test_hwang(j,k,i) = number_of_test_hwang(j,k,i) + n_steps;
+                 end
 
-                [beam_loc, n_steps] = exhaustive_hybrid_5g(N(k), m(j), location, gain_gaussian, angle_ue, threshold(i));
-                number_of_test_hex(j,k,i) = number_of_test_hex(j,k,i) + n_steps;
+                
 
                 res_hex = cell2mat(beam_loc);
                 res_hex = unique(res_hex); 
@@ -50,14 +59,14 @@ for k = 1:length(N)
                 end
                 
                 if isempty(res_hex)
-                     blockage_hex(j,k,i) = blockage_hex(j,k,i) +1;
-                     md_hex(j,k,i) = md_hex(j,k,i) + m(j);
+                     blockage(j,k,i) = blockage(j,k,i) +1;
+                     md(j,k,i) = md(j,k,i) + m(j);
                 else   
                      if sum(true_loc == res_hex', 'all') == 0
-                         blockage_hex(j,k,i) = blockage_hex(j,k,i) +1;
-                         md_hex(j,k,i) = md_hex(j,k,i) + m(j);                     
+                         blockage(j,k,i) = blockage(j,k,i) +1;
+                         md(j,k,i) = md(j,k,i) + m(j);                     
                     elseif sum(true_loc == res_hex', 'all') ~= length(true_loc)
-                         md_hex(j,k,i) = md_hex(j,k,i) + abs(length(true_loc) - sum(true_loc == res_hex', 'all'));
+                         md(j,k,i) = md(j,k,i) + abs(length(true_loc) - sum(true_loc == res_hex', 'all'));
 
                      end
                 end
@@ -70,8 +79,8 @@ for k = 1:length(N)
 end
 
 number_of_test_hex = number_of_test_hex./trial;
-blockage_hex = blockage_hex./trial;
-md_hex = md_hex./trial;
+blockage = blockage./trial;
+md = md./trial;
 
 
 save('5gsimulation_ntest_hex_02_27_22', 'number_of_test_hex')

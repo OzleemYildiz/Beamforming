@@ -1,7 +1,7 @@
  % Original method from the paper
 % With channel model
 
-function [beam_loc, n_steps, valid_loc] = hwang_5g(n,m, valid_loc, beam_loc, location, n_steps, sp)
+function [beam_loc, n_steps, valid_loc] = hwang_5g(n,m, valid_loc, beam_loc, location, n_steps, sp, gain_gaussian, angle_ue, threshold)
 
 %     if n == m
 %         %Append the locations to check
@@ -43,19 +43,15 @@ function [beam_loc, n_steps, valid_loc] = hwang_5g(n,m, valid_loc, beam_loc, loc
                 return;
             end 
            
-            check_ex = location(valid_loc(ex)) == 0; %=0 ACK
-             n_steps = n_steps +1;
+            %check_ex = location(valid_loc(ex)) == 0; %=0 ACK
+            
+            pathexists_1 = beamform(2*n, valid_loc(ex), gain_gaussian, angle_ue, threshold);
+            
+            n_steps = n_steps +1;
             n= n-1;
-            pe1 = rand(1,1);
-            pe2=  rand(1,1);
+
             
-            if check_ex == 0 && pe1< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
-                check_ex = 1;
-            elseif  check_ex && pe2< pfa
-                check_ex = 0;
-            end
-            
-            if check_ex == 0 %ACK
+            if pathexists_1 %ACK
                 beam_loc = [beam_loc, valid_loc(ex)];
                 m = m-1;
             end
@@ -75,31 +71,26 @@ function [beam_loc, n_steps, valid_loc] = hwang_5g(n,m, valid_loc, beam_loc, loc
         
        
         %NACK when check1 ==1 for the first part of a size of 2^alpha
-        check1 = sum(location(valid_loc(1: size_check)) == 0)== size_check;  
+        %check1 = sum(location(valid_loc(1: size_check)) == 0)== size_check; 
+        
+        %=1 when ACK
+        pathexists1 = beamform(2*n, valid_loc(1: size_check), gain_gaussian, angle_ue, threshold);
+
         n_steps = n_steps + 1;
         
-        % The impact of noise with respect to pmd and pfa
-        pe1 = rand(1,1);
-        pe2=  rand(1,1);
-        if check1 == 0 && pe1< pmd % random error satisfies, it's not ACK anymore (Check1 means it was a NACK)
-            check1 = 1;
-        elseif  check1 && pe2< pfa
-            check1 = 0;
-        end
         
         
-        
-        if check1 
+        if pathexists1 ==0 
             valid_loc = valid_loc(size_check+1: end);
             n = n-size_check;
             
-            [beam_loc, n_steps, valid_loc] = Hwang_gt(n,m, valid_loc, beam_loc, location, n_steps, pmd, pfa, sp); 
+            [beam_loc, n_steps, valid_loc] = hwang_5g(n,m, valid_loc, beam_loc, location, n_steps, sp, gain_gaussian, angle_ue, threshold); 
      
                 
         else
             %Parallel Binary Splitting
             
-            [beam_loc, test_n1, n,m, valid_loc_1] = binary_split(n, m, location, valid_loc(1:size_check) ,size_check, beam_loc, 0, pmd, pfa);
+            [beam_loc, test_n1, n,m, valid_loc_1] = binary_split_5g(n, m, location, valid_loc(1:size_check) ,size_check, beam_loc, 0, gain_gaussian, angle_ue, threshold);
             if test_n1 > alpha +1
                 ozzy = 1;
             end
@@ -108,7 +99,7 @@ function [beam_loc, n_steps, valid_loc] = hwang_5g(n,m, valid_loc, beam_loc, loc
             %size again
             n_steps = n_steps +test_n1-1;
       
-            [beam_loc, n_steps, valid_loc] = Hwang_gt(n,m, valid_loc, beam_loc, location, n_steps, pmd, pfa, sp); 
+            [beam_loc, n_steps, valid_loc] = hwang_5g(n,m, valid_loc, beam_loc, location, n_steps, sp, gain_gaussian, angle_ue, threshold); 
        
         end
     end
