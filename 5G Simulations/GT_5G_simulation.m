@@ -1,4 +1,4 @@
-method =2;
+method =3;
 N = 8:2:64;
 m = 2; %defective, %clusters
 threshold= [3, 6.5, 13, 20];
@@ -8,6 +8,7 @@ threshold= [3, 6.5, 13, 20];
 trial = 100;
 
 
+n_test_fs_gt = zeros(length(m),length(N), length(threshold));
 number_of_test_hwang =zeros(length(m),length(N), length(threshold));
 number_of_test_hex =zeros(length(m),length(N), length(threshold));
 blockage = zeros(length(m),length(N),  length(threshold));
@@ -44,9 +45,12 @@ for k = 1:length(N)
                  if method == 1    
                     [beam_loc, n_steps] = exhaustive_hybrid_5g(total_codebook, m(j), location, gain_gaussian, angle_ue, threshold(i));
                     number_of_test_hex(j,k,i) = number_of_test_hex(j,k,i) + n_steps;
-                elseif method ==2
+                 elseif method ==2
                     [beam_loc, n_steps, valid_loc] = hwang_5g(total_codebook,m(j), 1:total_codebook,{}, location, 0, 1, gain_gaussian, angle_ue, threshold);
                      number_of_test_hwang(j,k,i) = number_of_test_hwang(j,k,i) + n_steps;
+                 elseif method==3
+                      [beam_loc, n_steps] = gt_seperate_5g(total_codebook,m(j), location, gain_gaussian, angle_ue, threshold);
+                      n_test_fs_gt(j,k,i) = n_test_fs_gt(j,k,i) + n_steps;
                  end
 
                 
