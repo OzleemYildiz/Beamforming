@@ -94,4 +94,8 @@ elseif method ==2
     save('5gsimulation_ntest_hwang_02_28_22', 'number_of_test_hwang')
     save('5gsimulation_blockage_hwang_02_28_22', 'blockage')
     save('5gsimulation_md_hwang_02_28_22', 'md')
+elseif method ==3
+    save('5gsimulation_ntest_fs_gt_02_28_22', 'n_test_fs_gt')
+    save('5gsimulation_blockage_fs_gt_02_28_22', 'blockage')
+    save('5gsimulation_md_fs_gt_02_28_22', 'md')
 end
