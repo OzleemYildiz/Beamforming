@@ -5,7 +5,7 @@ threshold= [3, 6.5, 13, 20];
 
 
 
-trial = 100;
+trial = 200000;
 
 
 n_test_fs_gt = zeros(length(m),length(N), length(threshold));
@@ -83,6 +83,8 @@ for k = 1:length(N)
 end
 
 number_of_test_hex = number_of_test_hex./trial;
+number_of_test_hwang= number_of_test_hwang./trial;
+n_test_fs_gt = n_test_fs_gt./trial;
 blockage = blockage./trial;
 md = md./trial;
 
