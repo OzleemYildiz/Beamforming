@@ -1,4 +1,4 @@
-method =5;
+method =1;
 N = 64;
 m = 2; %defective, %clusters
 threshold= [3, 6.5, 13, 20];
@@ -99,24 +99,24 @@ blockage = blockage./trial;
 md = md./trial;
 
 if method == 1
-    save('5gsimulation_ntest_hex_03_01', 'number_of_test_hex')
-    save('5gsimulation_blockage_hex_03_01', 'blockage')
-    save('5gsimulation_md_hex_03_01', 'md')
+    save('5gsimulation_ntest_hex_03_01_threshold', 'number_of_test_hex')
+    save('5gsimulation_blockage_hex_03_01_threshold', 'blockage')
+    save('5gsimulation_md_hex_03_01_threshold', 'md')
 elseif method ==2
-    save('5gsimulation_ntest_hwang_03_01', 'number_of_test_hwang')
-    save('5gsimulation_blockage_hwang_03_01', 'blockage')
-    save('5gsimulation_md_hwang_03_01', 'md')
+    save('5gsimulation_ntest_hwang_03_01_threshold', 'number_of_test_hwang')
+    save('5gsimulation_blockage_hwang_03_01_threshold', 'blockage')
+    save('5gsimulation_md_hwang_03_01_threshold', 'md')
 elseif method ==3
-    save('5gsimulation_ntest_fs_gt_03_01', 'n_test_fs_gt')
-    save('5gsimulation_blockage_fs_gt_03_01', 'blockage')
-    save('5gsimulation_md_fs_gt_03_01', 'md')
+    save('5gsimulation_ntest_fs_gt_03_01_threshold', 'n_test_fs_gt')
+    save('5gsimulation_blockage_fs_gt_03_01_threshold', 'blockage')
+    save('5gsimulation_md_fs_gt_03_01_threshold', 'md')
 elseif method ==4
-    save('5gsimulation_ntest_f_ack_gt_03_01', 'n_test_f_ack_gt')
-    save('5gsimulation_blockage_f_ack_gt_03_01', 'blockage')
-    save('5gsimulation_md_f_ack_gt_03_01', 'md')
+    save('5gsimulation_ntest_f_ack_gt_03_01_threshold', 'n_test_f_ack_gt')
+    save('5gsimulation_blockage_f_ack_gt_03_01_threshold', 'blockage')
+    save('5gsimulation_md_f_ack_gt_03_01_threshold', 'md')
 elseif method ==5
-    save('5gsimulation_ntest_f_gt_03_01', 'n_test_f_gt')
-    save('5gsimulation_blockage_f_gt_03_01', 'blockage')
-    save('5gsimulation_md_f_gt_03_01', 'md')
+    save('5gsimulation_ntest_f_gt_03_01_threshold', 'n_test_f_gt')
+    save('5gsimulation_blockage_f_gt_03_01_threshold', 'blockage')
+    save('5gsimulation_md_f_gt_03_01_threshold', 'md')
 end
 

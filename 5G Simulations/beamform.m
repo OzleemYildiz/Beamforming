@@ -15,7 +15,10 @@ function pathexists = beamform(total_codebook, bf_index,gain_gaussian, angle_ue,
     %fprintf('error %f and %f and %f \n', resolution, total_index,total_codebook )
     
     N_antenna = round(1.78 / resolution);
-        
+    
+    %threshold update to scale with the antenna gain
+    threshold = threshold*sqrt(N_antenna/18); %18 is for 64 data beam
+    
     %The angle that the beam is focused should be the middle angle between
     %the indeces that we are searching
     beam_index= (max(bf_index) + min(bf_index)-1)/2;

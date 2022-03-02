@@ -48,13 +48,14 @@ save('pr_fa', 'pr_fa');
 save('pr_md', 'pr_md');
 
 
-% figure; 
-% plot(threshold, pr_fa, 'r','Linewidth', 3);
-% hold on
-% plot(threshold, pr_md, 'b','Linewidth', 3);
-% grid on;
-% set(gca, 'Fontsize', 16);
-% xlabel('Threshold');
-% ylabel('Probability');
-% legend('False Alarm', 'Misdetection')
-% title('N_{antenna}= 16, M =2')
+figure; 
+plot(threshold, pr_fa, 'r','Linewidth', 3);
+hold on
+plot(threshold, pr_md, 'b','Linewidth', 3);
+grid on;
+grid minor;
+set(gca, 'Fontsize', 16);
+xlabel('Threshold (SNR)','Interpreter','latex','FontSize', 18);
+ylabel('Probability','Interpreter','latex','FontSize', 18);
+legend('False Alarm', 'Misdetection','Location','northwest','Interpreter','latex','FontSize', 18')
+title('$N_{TX}= 64$, $M =2$','Interpreter','latex','FontSize', 18)
