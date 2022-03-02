@@ -1,13 +1,20 @@
 function pathexists = beamform(total_codebook, bf_index,gain_gaussian, angle_ue,threshold)
+   
+    %This should not happen anyway as well but let's see
+    if length(bf_index)==0
+        pathexists=0;
+        return;
+    end
+    
     %Transmit power
     p_tx=20; %dBm
-
-
     %If we were searching one index only: (2*pi/total_codebook)
     total_index = max(bf_index) - min(bf_index)+1;
     resolution = (2*pi/total_codebook)* total_index;
+
+    %fprintf('error %f and %f and %f \n', resolution, total_index,total_codebook )
     
-    N_antenna=  round(2*0.89/resolution);
+    N_antenna = round(1.78 / resolution);
         
     %The angle that the beam is focused should be the middle angle between
     %the indeces that we are searching

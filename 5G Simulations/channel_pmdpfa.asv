@@ -1,6 +1,8 @@
-function [gain_gaussian, angles] = channel(cluster)
-    %Antenna ULA
- 
+function [res, angles, angle_beam] = channel_pmdpfa(M,cluster)
+    %M = 64; %number of antenna - ULA
+
+    %cluster = 2; %Number of clusters
+    %Aykin
     p_tx = 20; %dbm, transmit power---uplink Akdeniz
     fc = 28*10^9; %center frequency in Hz
     bandwidth = 57.6*10^6; %bandwidth in Hz ? Where do we use it
@@ -30,7 +32,9 @@ function [gain_gaussian, angles] = channel(cluster)
     
     
     % Uniform random distribute UE
-    %There is a image of the beam so we use 0 to pi/2
+    %unifrnd(0,pi, [1, cluster])
+    %There is a image of the beam so we use 0 to pi
+    %unifrnd(min_dist,cell_radius, 1)
     ue_loc=unifrnd(min_dist,cell_radius, 1).*exp(1i*unifrnd(0,pi/2, [1, cluster]));
     dist_ue = abs(ue_loc);
     angle_ue = angle(ue_loc); %radian
@@ -40,8 +44,9 @@ function [gain_gaussian, angles] = channel(cluster)
     %%
     %d_2d % distance of their locations without the heights, on the surface
 
-    d_2d = dist_ue; %m
-    d_3d = sqrt(d_2d.^2 +(h_bs -h_ue)^2);%m
+    %d_2d = linspace(10,200,100)';
+    d_2d = dist_ue;
+    d_3d = sqrt(d_2d.^2 +(h_bs -h_ue)^2);
 
     %d_2d_out %normally p_los depends on this
 
@@ -77,6 +82,27 @@ function [gain_gaussian, angles] = channel(cluster)
     end
 
 
+
+    %%
+    % P_L_fs = fspl(d_2d,c/fc); %
+    % figure;
+    % [B,I] = sort(d_2d);
+    % semilogx(B, [P_L_fs(I)', P_L_los(I)', P_L_nlos(I)'],  'Linewidth', 3);
+    % grid on;
+    % legend(...
+    %     'Free space', '3GPP - LOS', '3GPP - NLOS', ...
+    %     'Location', 'NorthWest');
+    % set(gca, 'Fontsize', 16);
+    % xlabel('Distance (m)');
+    % ylabel('Path loss (dB)');
+    % 
+    % figure; 
+    % plot(B, Pr_los(I), 'Linewidth', 3);
+    % grid on;
+    % set(gca, 'Fontsize', 16);
+    % xlabel('Distance (m)');
+    % ylabel('Probability of LOS (dB)');
+
     %% Add shadowing -- Sundeep Lec2 Slide 63
 
     %w = randn(1, length(angle_ue));
@@ -106,6 +132,23 @@ function [gain_gaussian, angles] = channel(cluster)
     P_L = u.*P_L_los + (1-u).*P_L_nlos +Enoise;
 
 
+    % figure; 
+    % plot(d_2d, P_L, 'o','Linewidth', 3);
+    % grid on;
+    % set(gca, 'Fontsize', 16);
+    % xlabel('Distance (m)');
+    % ylabel('Path Loss');
+
+
+    %%!!!! What about an antenna gain
+
+
+
+    %?? Are we sure we should add N_F here when we are adding the noise later
+    %Compute total noise power
+    %noiseVariancedBm = -174 + 10*log10(bandwidth) + N_F;
+    %channelGaindB = P_L +noiseVariancedBm; 
+    % make scalar, gaussian with this variance 
     
     
     %Cluster powers
@@ -126,25 +169,58 @@ function [gain_gaussian, angles] = channel(cluster)
 
    
     
-%     % antenna steering vector
-%     d = lambda/2; %distance between antenna elements
-% 
-%     %Array y axis
-%     ant_steer = exp(-1i*2*pi*d.*cos(angle_ue).*(0:N_antenna-1)'/lambda); %Sundeep Lec8-30
-% 
-% 
-%     %gain* steering vector and summed
-%     channel_matrix= sum(ant_steer.*gain_gaussian,2);
-% 
-%     % dBm-30 = dB  
-%     s = sqrt(10^((p_tx-30)/10)) ;
-% 
-%     
-%     w = sqrt(1/2)*(randn(N_antenna,1) +1i*randn(N_antenna, 1));
-%     
-% 
-%     
-%     %Output
-%     y = channel_matrix*s +w;
     
+    
+    % antenna steering vector
+    d = lambda/2; %distance between antenna elements
+
+    %Array y axis
+    ant_steer = exp(-1i*2*pi*d.*cos(angle_ue).*(0:M-1)'/lambda)/sqrt(M); %Sundeep Lec8-30
+
+
+    %gain* steering vector and summed
+    channel_matrix= sum(ant_steer.*gain_gaussian,2).*sqrt(M);
+
+    %If transmit power = 20 dBm (fixed) -- Akdeniz
+    %dBm -30  = dB 
+    %Input
+    %s =sqrt(20);
+    
+    s = sqrt(10^((p_tx-30)/10)) ;
+
+
+
+    % Parameters for Noise- Sundeep __ NOT SURE
+    %Define noise figure at BS (in dB) --3gpp
+
+   
+    %Noise affect decreases the low SNRs but does not increase the biggest
+    %SNR value why???
+    
+    %w = sqrt(1/2)*(randn(M,1) +1i*randn(M, 1));
+    w= 0;
+
+    
+    % !!! YOu need to make sure that received energy is preserved
+    %Output
+    y = channel_matrix*s +w;
+    
+    
+    %avg_received =  10*log10(abs(mean(y)));
+    
+    % Beamforming
+    %index = randi([1,M],1);
+    %beam_loc= linspace(1, pi, M);
+    %angle_beam = beam_loc(index) +  beam_loc(maxindex+1)/2 ; %middle angle of the beam that I am searching  (90, 95.6250)
+    
+    %offset = pi/(2*M); 2/M
+    
+    %angle_beam = unifrnd(0+offset,pi-offset,1);
+    
+    angle_beam = pi/2;
+    beam_vector = exp(-1i*2*pi*d.*cos(angle_beam).*(0:M-1)'/lambda)/sqrt(M); %Sundeep Lec8-30
+
+    res_beam = beam_vector'*y;
+    
+    res= 10*log10(abs(res_beam ));
 end
