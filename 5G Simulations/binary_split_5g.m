@@ -19,7 +19,7 @@ function [beam_loc, test_n, n,m, valid_loc] = binary_split_5g(n, m, location, va
 
     %check =  sum(location(valid_loc(1:size_check)) == 0) == size_check; %NACK is 1
     
-    pathexists = beamform(4*n, valid_loc(1: size_check), gain_gaussian, angle_ue, threshold);
+    pathexists = beamform(n, valid_loc(1: size_check), gain_gaussian, angle_ue, threshold);
     test_n = n_tests +1;
     
     

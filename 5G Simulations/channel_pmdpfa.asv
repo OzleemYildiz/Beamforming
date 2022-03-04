@@ -1,4 +1,4 @@
-function [res, angles, angle_beam] = channel_pmdpfa(M,cluster)
+function [res, angles, bf_index] = channel_pmdpfa(M,cluster)
     %M = 64; %number of antenna - ULA
 
     %cluster = 2; %Number of clusters
@@ -197,8 +197,8 @@ function [res, angles, angle_beam] = channel_pmdpfa(M,cluster)
     %Noise affect decreases the low SNRs but does not increase the biggest
     %SNR value why???
     
-    %w = sqrt(1/2)*(randn(M,1) +1i*randn(M, 1));
-    w= 0;
+    w = sqrt(1/2)*(randn(M,1) +1i*randn(M, 1));
+    %w= 0;
 
     
     % !!! YOu need to make sure that received energy is preserved
@@ -213,14 +213,27 @@ function [res, angles, angle_beam] = channel_pmdpfa(M,cluster)
     %beam_loc= linspace(1, pi, M);
     %angle_beam = beam_loc(index) +  beam_loc(maxindex+1)/2 ; %middle angle of the beam that I am searching  (90, 95.6250)
     
-    %offset = pi/(2*M); 2/M
+    %offset = 2*0.89/M;
     
-    %angle_beam = unifrnd(0+offset,pi-offset,1);
+    %angle_beam = unifrnd(0,pi/2);
     
-    angle_beam = pi/2;
-    beam_vector = exp(-1i*2*pi*d.*cos(angle_beam).*(0:M-1)'/lambda)/sqrt(M); %Sundeep Lec8-30
+   %angle_beam = pi/2;
+    %beam_vector = exp(-1i*2*pi*d.*cos(angle_beam).*(0:M-1)'/lambda)/sqrt(M); %Sundeep Lec8-30
+    beam_dft = dftmtx(M)/sqrt(M);
+    beam_dft = flip(beam_dft,2);
 
+    beam_dft = circshift(beam_dft, [2, -M/2+1]);
+    bf_index = randi(0,M);
+    sintheta = 1/M *(bf_index-1);
+    phi = -asin(1/(2*M));
+    
+    shift = -2*sintheta*(sin(phi/2)^2) + sqrt(1 - sintheta^2)*sin(phi);
+    
+  
+    beam_vector = beam_dft(:,bf_index).*exp(-1i*2*pi*shift.*(0:M-1)');   
+
+    
     res_beam = beam_vector'*y;
     
-    res= 10*log10(abs(res_beam ));
+    res= 20*log10(abs(res_beam ));
 end

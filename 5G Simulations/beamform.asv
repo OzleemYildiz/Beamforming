@@ -63,21 +63,7 @@ function pathexists = beamform(total_codebook, bf_index,gain_gaussian, angle_ue,
 %     
 %     beam_vector = beam_dft(:,bf_index);
 %     
-    beam_dft = dftmtx(N_antenna)/sqrt(N_antenna);
-    beam_dft = flip(beam_dft,2);
-
-    beam_dft = circshift(beam_dft, [2, -N_antenna/2+1]);
     
-    sintheta = 1/N_antenna *(bf_index-1);
-    phi = -asin(1/(2*N_antenna));
-    
-    shift = -2*sintheta*(sin(phi/2)^2) + sqrt(1 - sintheta^2)*sin(phi);
-    
-    
-    beam_vector = beam_dft(:,bf_index).*exp(-1i*2*pi*shift.*(0:N_antenna-1)');
-    
-
-
     res_beam = beam_vector'*y;
     
     res= 20*log10(abs(res_beam ));

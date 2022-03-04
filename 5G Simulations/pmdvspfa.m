@@ -1,5 +1,5 @@
 %%
-threshold = -10:40;
+threshold = -30:50;
 
 pr_fa= zeros(size(threshold)); % No path but we think there is
 pr_md= zeros(size(threshold)); % Yes path but it should not be
@@ -8,18 +8,23 @@ trial = 1000000;
 path_exist= zeros(size(threshold));
 path_nonexist = zeros(size(threshold));
 
+M = 64; %We take this base case
+
 for j= 1:length(threshold)
     for i= 1:trial   
-        M = 64; %We take this base case
         
-        [res_snr, angles, angle_beam] = channel_pmdpfa(M,2);
+        [res_snr, angle_ue, bf_index] = channel_pmdpfa(M,2);
 
         %check_ans = rad2deg(angle) >= 90 && rad2deg(angle) <= 95.6250; 
         
-        offset = 1*0.89/M; % Half width of the beam
-        a1 = angles >= angle_beam - offset;
-        a2= angles <= angle_beam + offset;
-        check_ans = isempty(find(a1+a2 ==2))==0;
+%         offset = 1*0.89/M; % Half width of the beam
+%         a1 = angles >= angle_beam - offset;
+%         a2= angles <= angle_beam + offset;
+%         check_ans = isempty(find(a1+a2 ==2))==0;
+        
+        true_loc = locate_AoA_index(angle_ue, M);
+        
+        check_ans = sum(true_loc == bf_index) ~= 0;
         
         if check_ans==1 %There is a path
             path_exist(j)=path_exist(j)+1;

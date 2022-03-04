@@ -45,7 +45,7 @@ function [beam_loc, n_steps, valid_loc] = hwang_5g(n,m, valid_loc, beam_loc, loc
            
             %check_ex = location(valid_loc(ex)) == 0; %=0 ACK
             
-            pathexists_1 = beamform(4*n, valid_loc(ex), gain_gaussian, angle_ue, threshold);
+            pathexists_1 = beamform(n, valid_loc(ex), gain_gaussian, angle_ue, threshold);
             
             n_steps = n_steps +1;
             n= n-1;
@@ -74,7 +74,7 @@ function [beam_loc, n_steps, valid_loc] = hwang_5g(n,m, valid_loc, beam_loc, loc
         %check1 = sum(location(valid_loc(1: size_check)) == 0)== size_check; 
         
         %=1 when ACK
-        pathexists1 = beamform(4*n, valid_loc(1: size_check), gain_gaussian, angle_ue, threshold);
+        pathexists1 = beamform(n, valid_loc(1: size_check), gain_gaussian, angle_ue, threshold);
 
         n_steps = n_steps + 1;
         
