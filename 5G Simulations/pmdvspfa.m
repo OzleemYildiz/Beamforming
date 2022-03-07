@@ -22,8 +22,9 @@ for j= 1:length(threshold)
 %         a2= angles <= angle_beam + offset;
 %         check_ans = isempty(find(a1+a2 ==2))==0;
         
-        true_loc = locate_AoA_index(angle_ue, M);
-        
+        %true_loc = locate_AoA_index(angle_ue, M);
+        true_loc = sum(angle_ue' > linspace(-pi/2, pi/2,M+1), 2)';
+
         check_ans = sum(true_loc == bf_index) ~= 0;
         
         if check_ans==1 %There is a path
@@ -53,14 +54,14 @@ save('pr_fa', 'pr_fa');
 save('pr_md', 'pr_md');
 
 
-figure; 
-plot(threshold, pr_fa, 'r','Linewidth', 3);
-hold on
-plot(threshold, pr_md, 'b','Linewidth', 3);
-grid on;
-grid minor;
-set(gca, 'Fontsize', 16);
-xlabel('Threshold (SNR)','Interpreter','latex','FontSize', 18);
-ylabel('Probability','Interpreter','latex','FontSize', 18);
-legend('False Alarm', 'Misdetection','Location','northwest','Interpreter','latex','FontSize', 18')
-title('$N_{TX}= 64$, $M =2$','Interpreter','latex','FontSize', 18)
+% figure; 
+% plot(threshold, pr_fa, 'r','Linewidth', 3);
+% hold on
+% plot(threshold, pr_md, 'b','Linewidth', 3);
+% grid on;
+% grid minor;
+% set(gca, 'Fontsize', 16);
+% xlabel('Threshold (SNR)','Interpreter','latex','FontSize', 18);
+% ylabel('Probability','Interpreter','latex','FontSize', 18);
+% legend('False Alarm', 'Misdetection','Location','northwest','Interpreter','latex','FontSize', 18')
+% title('$N_{TX}= 64$, $M =2$','Interpreter','latex','FontSize', 18)

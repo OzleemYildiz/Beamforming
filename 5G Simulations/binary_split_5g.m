@@ -1,4 +1,4 @@
-function [beam_loc, test_n, n,m, valid_loc] = binary_split_5g(n, m, location, valid_loc,size_check, beam_loc, n_tests, gain_gaussian, angle_ue, threshold)
+function [beam_loc, test_n, n,m, valid_loc] = binary_split_5g(total_codebook,n, m, location, valid_loc,size_check, beam_loc, n_tests, gain_gaussian, angle_ue, threshold)
     
     if n == 0 || size(valid_loc,2) == 0 %Sometimes I can end without finding the beam
         test_n = n_tests;
@@ -19,7 +19,7 @@ function [beam_loc, test_n, n,m, valid_loc] = binary_split_5g(n, m, location, va
 
     %check =  sum(location(valid_loc(1:size_check)) == 0) == size_check; %NACK is 1
     
-    pathexists = beamform(n, valid_loc(1: size_check), gain_gaussian, angle_ue, threshold);
+    pathexists = beamform(total_codebook,n, valid_loc(1: size_check), gain_gaussian, angle_ue, threshold);
     test_n = n_tests +1;
     
     
@@ -46,16 +46,16 @@ function [beam_loc, test_n, n,m, valid_loc] = binary_split_5g(n, m, location, va
         elseif pathexists==0 %NACK 
             valid_loc = valid_loc(size_check+1:end);
             n = n-1;
-            [beam_loc, test_n, n, m, valid_loc] = binary_split_5g(n, m, location, valid_loc, 1, beam_loc, test_n, gain_gaussian, angle_ue, threshold);
+            [beam_loc, test_n, n, m, valid_loc] = binary_split_5g(total_codebook,n, m, location, valid_loc, 1, beam_loc, test_n, gain_gaussian, angle_ue, threshold);
         end
         
      elseif pathexists ==0 %NACK
         valid_loc = valid_loc(size_check+1:end);
         n = n - size_check;
         m = m;
-        [beam_loc, test_n, n, m, valid_loc] = binary_split_5g(n, m, location, valid_loc, floor(size_check/2), beam_loc, test_n, gain_gaussian, angle_ue, threshold);
+        [beam_loc, test_n, n, m, valid_loc] = binary_split_5g(total_codebook,n, m, location, valid_loc, floor(size_check/2), beam_loc, test_n, gain_gaussian, angle_ue, threshold);
     else
-       [beam_loc, test_n, n, m, valid_loc] = binary_split_5g(n, m, location, valid_loc, floor(size_check/2), beam_loc, test_n, gain_gaussian, angle_ue, threshold);
+       [beam_loc, test_n, n, m, valid_loc] = binary_split_5g(total_codebook,n, m, location, valid_loc, floor(size_check/2), beam_loc, test_n, gain_gaussian, angle_ue, threshold);
                
     end
   

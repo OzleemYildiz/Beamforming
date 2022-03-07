@@ -31,7 +31,7 @@ function [gain_gaussian, angles] = channel(cluster)
     
     % Uniform random distribute UE
     %There is a image of the beam so we use 0 to pi/2
-    %unifrnd(0,pi/2, [1, cluster])
+    %unifrnd(-pi/2,pi/2, [1, cluster])
     %unifrnd(min_dist,cell_radius, 1)
     ue_loc=25.*exp(1i*[pi/4, pi/3]);
     dist_ue = abs(ue_loc);

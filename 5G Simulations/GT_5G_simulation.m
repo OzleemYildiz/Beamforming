@@ -40,7 +40,8 @@ for k = 1:length(N)
                 %index
 
                 %true_loc = sum(angle_ue' > beam_locs,2)';
-                true_loc = locate_AoA_index(angle_ue, N);
+                %true_loc = locate_AoA_index(angle_ue, N);
+                true_loc = sum(angle_ue' > linspace(-pi/2, pi/2, N(k)+1), 2)';
 
                 %2*0.89/N is the beamwidth of [0,2*pi],thats why N/2 is the
                 %codebook for[0, pi]    
@@ -51,7 +52,7 @@ for k = 1:length(N)
                     [beam_loc, n_steps] = exhaustive_hybrid_5g(total_codebook, m(j), location, gain_gaussian, angle_ue, threshold(i));
                     number_of_test_hex(j,k,i) = number_of_test_hex(j,k,i) + n_steps;
                  elseif method ==2
-                    [beam_loc, n_steps, valid_loc] = hwang_5g(total_codebook,m(j), 1:total_codebook,{}, location, 0, 1, gain_gaussian, angle_ue, threshold(i));
+                    [beam_loc, n_steps, valid_loc] = hwang_5g(total_codebook, N(k),m(j), 1:total_codebook,{}, location, 0, 1, gain_gaussian, angle_ue, threshold(i));
                      number_of_test_hwang(j,k,i) = number_of_test_hwang(j,k,i) + n_steps;
                  elseif method==3
                       [beam_loc, n_steps] = gt_seperate_5g(total_codebook,m(j), location, gain_gaussian, angle_ue, threshold(i));

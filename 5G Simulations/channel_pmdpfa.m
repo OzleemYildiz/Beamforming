@@ -35,7 +35,7 @@ function [res, angles, bf_index] = channel_pmdpfa(M,cluster)
     %unifrnd(0,pi, [1, cluster])
     %There is a image of the beam so we use 0 to pi
     %unifrnd(min_dist,cell_radius, 1)
-    ue_loc=unifrnd(min_dist,cell_radius, 1).*exp(1i*unifrnd(0,pi/2, [1, cluster]));
+    ue_loc=unifrnd(min_dist,cell_radius, 1).*exp(1i*unifrnd(-pi/2,pi/2, [1, cluster]));
     dist_ue = abs(ue_loc);
     angle_ue = angle(ue_loc); %radian
     
@@ -175,8 +175,13 @@ function [res, angles, bf_index] = channel_pmdpfa(M,cluster)
     d = lambda/2; %distance between antenna elements
 
     %Array y axis
-    ant_steer = exp(-1i*2*pi*d.*cos(angle_ue).*(0:M-1)'/lambda)/sqrt(M); %Sundeep Lec8-30
+    %ant_steer = exp(-1i*2*pi*d.*cos(angle_ue).*(0:M-1)'/lambda)/sqrt(M); %Sundeep Lec8-30
+    n = sum(angle_ue' > linspace(-pi/2, pi/2, M+1), 2)';
+    theta = -1 + (2*n-1)/ M;
+    
+    ant_steer = exp(-1i*2*pi*d*theta.*(0:M-1)'/lambda)/sqrt(M); %Sundeep Lec8-30
 
+    
 
     %gain* steering vector and summed
     channel_matrix= sum(ant_steer.*gain_gaussian,2).*sqrt(M);
@@ -219,19 +224,19 @@ function [res, angles, bf_index] = channel_pmdpfa(M,cluster)
     
    %angle_beam = pi/2;
     %beam_vector = exp(-1i*2*pi*d.*cos(angle_beam).*(0:M-1)'/lambda)/sqrt(M); %Sundeep Lec8-30
-    beam_dft = dftmtx(M)/sqrt(M);
-    beam_dft = flip(beam_dft,2);
-
-    beam_dft = circshift(beam_dft, [2, -M/2+1]);
-    bf_index = randi([1,M/2]);
-    sintheta = 1/M *(bf_index-1);
-    phi = -asin(1/(2*M));
-    
-    shift = -2*sintheta*(sin(phi/2)^2) + sqrt(1 - sintheta^2)*sin(phi);
-    
-  
-    beam_vector = beam_dft(:,bf_index).*exp(-1i*2*pi*shift.*(0:M-1)');   
-
+%     beam_dft = dftmtx(M)/sqrt(M);
+%     beam_dft = flip(beam_dft,2);
+% 
+%     beam_dft = circshift(beam_dft, [2, -M/2+1]);
+     bf_index = randi([1,M/2]);
+%     sintheta = 1/M *(bf_index-1);
+%     phi = -asin(1/(2*M));
+%     
+%     shift = -2*sintheta*(sin(phi/2)^2) + sqrt(1 - sintheta^2)*sin(phi);
+%     
+%   
+%     beam_vector = beam_dft(:,bf_index).*exp(-1i*2*pi*shift.*(0:M-1)');   
+    beam_vector = exp(-1i*2*pi/M.*(bf_index - (M+1)./2).*(0:M-1)')/sqrt(M);
     
     res_beam = beam_vector'*y;
     
