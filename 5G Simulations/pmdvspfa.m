@@ -4,7 +4,7 @@ threshold = -30:70;
 pr_fa= zeros(size(threshold)); % No path but we think there is
 pr_md= zeros(size(threshold)); % Yes path but it should not be
 
-trial = 1000000;
+trial = 10000;
 path_exist= zeros(size(threshold));
 path_nonexist = zeros(size(threshold));
 

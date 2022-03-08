@@ -247,7 +247,7 @@ function [res, angles, bf_index] = channel_pmdpfa(M,cluster)
     antenna_gain = zeros(1, cluster);
     
     if sum(n_ueloc == bf_index)>0
-        antenna_gain(n == index) = sqrt(M);
+        antenna_gain(n_ueloc == bf_index) = sqrt(M);
     end
     
     w = sqrt(1/2)*(randn(1,1) +1i*randn(1, 1));

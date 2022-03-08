@@ -1,11 +1,11 @@
-method =1;
+method =5;
 N = 64;
 m = 2; %defective, %clusters
-threshold= 49.1;
+threshold= -10:2:40;
 
 
 
-trial = 500;
+trial = 1000000;
 
 
 n_test_fs_gt = zeros(length(m),length(N), length(threshold));
@@ -17,16 +17,17 @@ n_test_f_gt = zeros(length(m),length(N), length(threshold));
 blockage = zeros(length(m),length(N),  length(threshold));
 md = zeros(length(m), length(N), length(threshold));
 for k = 1:length(N)
-    resolution = (2*pi/N(k));
-    N_antenna=  round(2*0.89/resolution);
-    beam_locs = 0:resolution:pi;
+%     resolution = (2*pi/N(k));
+%     N_antenna=  round(2*0.89/resolution);
+%     beam_locs = 0:resolution:pi;
     
     %total_codebook = N(k)/4; %search over pi/2
-    total_codebook = N(k);
+
     
     for j = 1:length(m)        
         for i = 1:length(threshold)
             for tr = 1:trial  
+                total_codebook = N(k);
                 location = zeros(1, N(k)/4);
                 %Because of ULA antenna array, angles of user is limited to be
                 %in [0, pi]. I should decide allocations and make changes to
@@ -41,7 +42,7 @@ for k = 1:length(N)
 
                 %true_loc = sum(angle_ue' > beam_locs,2)';
                 %true_loc = locate_AoA_index(angle_ue, N);
-                true_loc = sum(angle_ue' > linspace(-pi/2, pi/2, N(k)+1), 2)';
+                true_loc = sum(angle_ue' > linspace(0, 2*pi, N(k)+1), 2)';
 
                 %2*0.89/N is the beamwidth of [0,2*pi],thats why N/2 is the
                 %codebook for[0, pi]    
@@ -58,10 +59,10 @@ for k = 1:length(N)
                       [beam_loc, n_steps] = gt_seperate_5g(total_codebook,m(j), location, gain_gaussian, angle_ue, threshold(i));
                       n_test_fs_gt(j,k,i) = n_test_fs_gt(j,k,i) + n_steps;
                  elseif method==4
-                      [beam_loc, n_steps] = parallel_gt_ack_5g(total_codebook,m(j),1:total_codebook,{}, location,0, gain_gaussian, angle_ue, threshold(i));
+                      [beam_loc, n_steps] = parallel_gt_ack_5g(total_codebook,N(k),m(j),1:total_codebook,{}, location,0, gain_gaussian, angle_ue, threshold(i));
                       n_test_f_ack_gt(j,k,i) = n_test_f_ack_gt(j,k,i) + n_steps;
                  elseif method==5
-                      [beam_loc, n_steps] = parallel_gt_5g(total_codebook,m(j),1:total_codebook,{}, location,0, gain_gaussian, angle_ue, threshold(i));
+                      [beam_loc, n_steps] = parallel_gt_5g(total_codebook,N(k),m(j),1:total_codebook,{}, location,0, gain_gaussian, angle_ue, threshold(i));
                       n_test_f_gt(j,k,i) = n_test_f_gt(j,k,i) + n_steps;
                  end
 
@@ -102,24 +103,24 @@ blockage = blockage./trial;
 md = md./trial;
 
 if method == 1
-    save('5gsimulation_ntest_hex_03_01_threshold', 'number_of_test_hex')
-    save('5gsimulation_blockage_hex_03_01_threshold', 'blockage')
-    save('5gsimulation_md_hex_03_01_threshold', 'md')
+    save('5gsimulation_ntest_hex_03_08_sectored', 'number_of_test_hex')
+    save('5gsimulation_blockage_hex_03_08_sectored', 'blockage')
+    save('5gsimulation_md_hex_03_08_sectored', 'md')
 elseif method ==2
-    save('5gsimulation_ntest_hwang_03_01_threshold', 'number_of_test_hwang')
-    save('5gsimulation_blockage_hwang_03_01_threshold', 'blockage')
-    save('5gsimulation_md_hwang_03_01_threshold', 'md')
+    save('5gsimulation_ntest_hwang_03_08_sectored', 'number_of_test_hwang')
+    save('5gsimulation_blockage_hwang_03_08_sectored', 'blockage')
+    save('5gsimulation_md_hwang_03_08_sectored', 'md')
 elseif method ==3
-    save('5gsimulation_ntest_fs_gt_03_01_threshold', 'n_test_fs_gt')
-    save('5gsimulation_blockage_fs_gt_03_01_threshold', 'blockage')
-    save('5gsimulation_md_fs_gt_03_01_threshold', 'md')
+    save('5gsimulation_ntest_fs_gt_03_08_sectored', 'n_test_fs_gt')
+    save('5gsimulation_blockage_fs_gt_03_08_sectored', 'blockage')
+    save('5gsimulation_md_fs_gt_03_08_sectored', 'md')
 elseif method ==4
-    save('5gsimulation_ntest_f_ack_gt_03_01_threshold', 'n_test_f_ack_gt')
-    save('5gsimulation_blockage_f_ack_gt_03_01_threshold', 'blockage')
-    save('5gsimulation_md_f_ack_gt_03_01_threshold', 'md')
+    save('5gsimulation_ntest_f_ack_gt_03_08_sectored', 'n_test_f_ack_gt')
+    save('5gsimulation_blockage_f_ack_gt_03_08_sectored', 'blockage')
+    save('5gsimulation_md_f_ack_gt_03_08_sectored', 'md')
 elseif method ==5
-    save('5gsimulation_ntest_f_gt_03_01_threshold', 'n_test_f_gt')
-    save('5gsimulation_blockage_f_gt_03_01_threshold', 'blockage')
-    save('5gsimulation_md_f_gt_03_01_threshold', 'md')
+    save('5gsimulation_ntest_f_gt_03_08_sectored', 'n_test_f_gt')
+    save('5gsimulation_blockage_f_gt_03_08_sectored', 'blockage')
+    save('5gsimulation_md_f_gt_03_08_sectored', 'md')
 end
 

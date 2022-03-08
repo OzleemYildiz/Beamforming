@@ -35,7 +35,7 @@ function [gain_gaussian, angles] = channel(cluster)
     %unifrnd(min_dist,cell_radius, 1)
     ue_loc=unifrnd(min_dist,cell_radius, 1).*exp(1i*unifrnd(0.0001,2*pi, [1, cluster]));
     dist_ue = abs(ue_loc);
-    %angle returns in [-pi, pi], I need [0,2*pi]
+    %
     angle_ue = angle(ue_loc) + pi; %radian
     
     angles = angle_ue;
