@@ -35,7 +35,7 @@ function [res, angles, bf_index] = channel_pmdpfa(M,cluster)
     %unifrnd(0,pi, [1, cluster])
     %There is a image of the beam so we use 0 to pi
     %unifrnd(min_dist,cell_radius, 1)
-    ue_loc=unifrnd(min_dist,cell_radius, 1).*exp(1i*unifrnd(-pi/2,pi/2, [1, cluster]));
+    ue_loc=unifrnd(min_dist,cell_radius, 1).*exp(1i*unifrnd(0.0001,2*pi , [1, cluster]));
     dist_ue = abs(ue_loc);
     angle_ue = angle(ue_loc); %radian
     
@@ -172,19 +172,19 @@ function [res, angles, bf_index] = channel_pmdpfa(M,cluster)
     
     
     % antenna steering vector
-    d = lambda/2; %distance between antenna elements
+    %d = lambda/2; %distance between antenna elements
 
     %Array y axis
     %ant_steer = exp(-1i*2*pi*d.*cos(angle_ue).*(0:M-1)'/lambda)/sqrt(M); %Sundeep Lec8-30
-    n = sum(angle_ue' > linspace(-pi/2, pi/2, M+1), 2)';
-    theta = -1 + (2*n-1)/ M;
+    n_ueloc = sum(angle_ue' > linspace(0, 2*pi, M+1), 2)';
+    %theta = -1 + (2*n-1)/ M;
     
-    ant_steer = exp(-1i*2*pi*d*theta.*(0:M-1)'/lambda)/sqrt(M); %Sundeep Lec8-30
+    %ant_steer = exp(-1i*2*pi*d*theta.*(0:M-1)'/lambda)/sqrt(M); %Sundeep Lec8-30
 
     
 
     %gain* steering vector and summed
-    channel_matrix= sum(ant_steer.*gain_gaussian,2).*sqrt(M);
+    %channel_matrix= sum(ant_steer.*gain_gaussian,2).*sqrt(M);
 
     %If transmit power = 20 dBm (fixed) -- Akdeniz
     %dBm -30  = dB 
@@ -202,13 +202,13 @@ function [res, angles, bf_index] = channel_pmdpfa(M,cluster)
     %Noise affect decreases the low SNRs but does not increase the biggest
     %SNR value why???
     
-    w = sqrt(1/2)*(randn(M,1) +1i*randn(M, 1));
+    %w = sqrt(1/2)*(randn(M,1) +1i*randn(M, 1));
     %w= 0;
 
     
     % !!! YOu need to make sure that received energy is preserved
     %Output
-    y = channel_matrix*s +w;
+    %y = channel_matrix*s +w;
     
     
     %avg_received =  10*log10(abs(mean(y)));
@@ -228,7 +228,7 @@ function [res, angles, bf_index] = channel_pmdpfa(M,cluster)
 %     beam_dft = flip(beam_dft,2);
 % 
 %     beam_dft = circshift(beam_dft, [2, -M/2+1]);
-     bf_index = randi([1,M/2]);
+      bf_index = randi([1,M]);
 %     sintheta = 1/M *(bf_index-1);
 %     phi = -asin(1/(2*M));
 %     
@@ -236,9 +236,23 @@ function [res, angles, bf_index] = channel_pmdpfa(M,cluster)
 %     
 %   
 %     beam_vector = beam_dft(:,bf_index).*exp(-1i*2*pi*shift.*(0:M-1)');   
-    beam_vector = exp(-1i*2*pi/M.*(bf_index - (M+1)./2).*(0:M-1)')/sqrt(M);
+%     beam_vector = exp(-1i*2*pi/M.*(bf_index - (M+1)./2).*(0:M-1)')/sqrt(M);
+%     
+%     res_beam = beam_vector'*y;
+%     
+%     res= 20*log10(abs(res_beam ));
+
     
-    res_beam = beam_vector'*y;
+    %Sectored antenna model ---
+    antenna_gain = zeros(1, cluster);
     
-    res= 20*log10(abs(res_beam ));
+    if sum(n_ueloc == bf_index)>0
+        antenna_gain(n == index) = sqrt(M);
+    end
+    
+    w = sqrt(1/2)*(randn(1,1) +1i*randn(1, 1));
+
+    y = s*gain_gaussian*antenna_gain' +w;
+    
+    res= 20*log10(abs(y));
 end

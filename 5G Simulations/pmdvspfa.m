@@ -1,5 +1,5 @@
 %%
-threshold = -30:50;
+threshold = -30:70;
 
 pr_fa= zeros(size(threshold)); % No path but we think there is
 pr_md= zeros(size(threshold)); % Yes path but it should not be
@@ -23,7 +23,7 @@ for j= 1:length(threshold)
 %         check_ans = isempty(find(a1+a2 ==2))==0;
         
         %true_loc = locate_AoA_index(angle_ue, M);
-        true_loc = sum(angle_ue' > linspace(-pi/2, pi/2,M+1), 2)';
+        true_loc = sum(angle_ue' > linspace(0, 2*pi,M+1), 2)';
 
         check_ans = sum(true_loc == bf_index) ~= 0;
         
