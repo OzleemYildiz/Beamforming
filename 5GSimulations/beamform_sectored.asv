@@ -1,5 +1,5 @@
 
-function [pathexists, snr_2paths, snr_1path, count_2paths, count_1path] = beamform_sectored(total_codebook,n, bf_index,gain_gaussian, angle_ue,threshold)
+function pathexists = beamform_sectored(total_codebook,n, bf_index,gain_gaussian, angle_ue,threshold)
    
     %This should not happen anyway as well but let's see
     if length(bf_index)==0
@@ -45,7 +45,7 @@ function [pathexists, snr_2paths, snr_1path, count_2paths, count_1path] = beamfo
 
     y = s*gain_gaussian*antenna_gain' +w;
     
-    res= 20*log10(abs(y));
+    res= 20*log10(abs(y ));
     
     if res <= threshold
         pathexists = 0;
@@ -53,21 +53,8 @@ function [pathexists, snr_2paths, snr_1path, count_2paths, count_1path] = beamfo
         pathexists = 1;
     end
     
-   
-    
-    %Addition for Multi-Level measuring
-    % Measure the energy difference when there are two paths in the beam
-   count_2paths = 0; 
-   snr_2paths = 0;
-   snr_1path = 0;
-   count_1path =0;
-   
-   if sum(in_out)>=2  %There are at least two AoAs in the angular interval
-       snr_2paths = res;
-       count_2paths= 1;       
-   elseif sum(in_out)==1 %There is only one AoA in the angular interval
-       snr_1path = res;
-       count_1path = 1;
+   if sum(in_out)>2
+        
    end
     
     
