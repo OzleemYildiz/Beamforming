@@ -56,7 +56,7 @@ for k = 1:length(N)
                 location(true_loc)=1;
                 
    
-                [beam_loc, n_steps, snr_2paths_i, snr_1path_i, count_2paths_i,count_1path_i ] = exhaustive_hybrid_5g(total_codebook, m(j), location, gain_gaussian, angle_ue, threshold(i));
+                [beam_loc, n_steps, snr_2paths_i, snr_1path_i, count_2paths_i,count_1path_i ] = exhaustive_hybrid_5g_multi(total_codebook, m(j), location, gain_gaussian, angle_ue, threshold(i));
                     
                 count_2paths(k) = count_2paths(k)+count_2paths_i;
                 count_1path(k) = count_1path(k)+count_1path_i;
@@ -84,6 +84,5 @@ snr_1path = snr_1path./count_1path;
 snr_2paths = snr_2paths./count_2paths;
 
 
-% save('5gsimulation_ntest_hex_03_08_sectored', 'number_of_test_hex')
-% save('5gsimulation_blockage_hex_03_08_sectored', 'blockage')
-% save('5gsimulation_md_hex_03_08_sectored', 'md')
+save('snr_1path_angledifference_01', 'snr_1path')
+save('snr_2paths_angledifference_01', 'snr_2paths')

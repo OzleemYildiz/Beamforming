@@ -41,22 +41,33 @@ function [gain_gaussian, angles] = channel(cluster, multilevel)
     
     % Uniform random distribute UE
     
-    %There is a image of the beam so we use 0 to pi/2 if its real beam
-    % But now, we use 0 to 2*pi since we use sectored antenna model
+    %There is a image of the beam so we use 0 to pi if its real beam
+    % But now, we use 0 to 2*pi if we use sectored antenna model
     
     % Change for multi-level measuring, put two angles in same interval
     if multilevel 
-        rand_ang= unifrnd(0.0001,2*pi, [1, cluster-1]);
-        angle_create = [rand_ang,rand_ang(1)+ 0.01];
+        rand_ang= unifrnd(0.0001,pi, [1, cluster-1]);
+        
+        if rand_ang(1)- 0.01 < 0
+            repeat_ang = rand_ang(1)+ 0.01;
+        else
+            repeat_ang = rand_ang(1)- 0.01;
+        end
+        
+        angle_create = [rand_ang,repeat_ang];
     else
-        angle_create = unifrnd(0.0001,2*pi, [1, cluster]);
+        angle_create = unifrnd(0.0001,pi, [1, cluster]);
     end
     
     ue_loc=unifrnd(min_dist,cell_radius, 1).*exp(1i*angle_create);
     dist_ue = abs(ue_loc);
-    %angle returns in [-pi, pi], I need [0,2*pi]
-    angle_ue = angle(ue_loc) + pi; %radian
-    
+    %If sectored antenna-----
+%     %angle returns in [-pi, pi], I need [0,2*pi]
+%     angle_ue = angle(ue_loc) + pi; %radian
+     
+    %If hierarchical antenna 
+    angle_ue = angle(ue_loc);
+
     angles = angle_ue;
 
     %%

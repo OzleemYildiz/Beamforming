@@ -2,7 +2,7 @@
 %function pathexists = beamform(total_codebook, bf_index,gain_gaussian, angle_ue,threshold)
 %indeces will be checked through beamform function instead of putting yes.
 
-function [beam_loc, n_steps, snr_2paths, snr_1path, count_2paths,count_1path] = exhaustive_hybrid_5g(n, m, location, gain_gaussian, angle_ue, threshold)
+function [beam_loc, n_steps, snr_2paths, snr_1path, count_2paths,count_1path] = exhaustive_hybrid_5g_multi(n, m, location, gain_gaussian, angle_ue, threshold)
     %I nitalization for multi-level
     count_2paths = 0;
     snr_2paths = 0;

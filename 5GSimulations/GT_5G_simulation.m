@@ -1,12 +1,14 @@
-method =1;
-N = 8:64;
+method =2;
+N = 2.^(3:6);
 m = 2; %defective, %clusters
-threshold= 12;
-
+threshold= 2:30;
 
 
 trial = 100;
 
+
+%I am not measuring multilevel
+multilevel= 0;
 
 n_test_fs_gt = zeros(length(m),length(N), length(threshold));
 number_of_test_hwang =zeros(length(m),length(N), length(threshold));
@@ -33,7 +35,7 @@ for k = 1:length(N)
                 %in [0, pi]. I should decide allocations and make changes to
                 %search only in this region. 
                
-                [gain_gaussian, angle_ue] = channel(m(j)); 
+                [gain_gaussian, angle_ue] = channel(m(j), multilevel); 
 
 
                 %Where are the locations of the angles
@@ -42,8 +44,12 @@ for k = 1:length(N)
 
                 %true_loc = sum(angle_ue' > beam_locs,2)';
                 %true_loc = locate_AoA_index(angle_ue, N);
-                true_loc = sum(angle_ue' > linspace(0, 2*pi, N(k)+1), 2)';
+                %true_loc = sum(angle_ue' > linspace(0, 2*pi, N(k)+1), 2)';
 
+                %Locating for Hierarchical Codebook
+                true_loc = locate_AoA_index_hierarchical(angle_ue, N(k));
+                
+                
                 %2*0.89/N is the beamwidth of [0,2*pi],thats why N/2 is the
                 %codebook for[0, pi]    
                 % Again create a location array for indeces in beamforming 

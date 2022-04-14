@@ -76,8 +76,7 @@ function [beam_loc, n_steps, valid_loc] = hwang_5g(total_codebook,n,m, valid_loc
         
         %=1 when ACK
         %pathexists1 = beamform_sectored(total_codebook, n, valid_loc(1: size_check), gain_gaussian, angle_ue, threshold);
-        
-        pathexists1 = beamform_hierarchical(total_codebook, n, valid_loc(1: size_check), gain_gaussian, angle_ue, threshold);
+        pathexists_1 = beamform_hierarchical(total_codebook, n, valid_loc(1: size_check), gain_gaussian, angle_ue, threshold);
 
         n_steps = n_steps + 1;
         
