@@ -81,9 +81,9 @@ function [beam_loc, n_steps] = parallel_gt_5g_2(total_codebook,n,m, valid_loc, b
         
         
         %NACK for the second part of a size of 2^alpha
-        hold = length(valid_loc(size_check+1: min(2*size_check, end)));
+        hold = 2^floor(log2(length(valid_loc(size_check+1: min(2*size_check, end)))));
         %check2 = sum(location(valid_loc(size_check+1: min(2*size_check, end))) == 0)== hold;
-        pathexists_2 = beamform_hierarchical(total_codebook,n,valid_loc(end-hold+1:end), gain_gaussian, angle_ue, threshold);
+        pathexists_2 = beamform_hierarchical(total_codebook,n,flip(valid_loc(end-hold+1:end)), gain_gaussian, angle_ue, threshold);
 
         n_steps = n_steps + 1;
         
@@ -116,7 +116,7 @@ function [beam_loc, n_steps] = parallel_gt_5g_2(total_codebook,n,m, valid_loc, b
                 n = n-size_check-hold;
             end
             
-            [beam_loc, n_steps] = parallel_gt_5g_2(total_codebook,n,m, valid_loc, beam_loc, location, n_steps,gain_gaussian, angle_ue, threshold); 
+            [beam_loc, n_steps] = parallel_gt_5g_2(total_codebook,n,m, sort(valid_loc), beam_loc, location, n_steps,gain_gaussian, angle_ue, threshold); 
 
         end
             
@@ -134,20 +134,20 @@ function [beam_loc, n_steps] = parallel_gt_5g_2(total_codebook,n,m, valid_loc, b
         
         
         if (pathexists_1==0 || pathexists_2==0) && size_check~=1
-            [beam_loc, n_steps] = parallel_gt_5g_2(total_codebook, n,m, valid_loc, beam_loc, location, n_steps,gain_gaussian, angle_ue, threshold); 
+            [beam_loc, n_steps] = parallel_gt_5g_2(total_codebook, n,m, sort(valid_loc), beam_loc, location, n_steps,gain_gaussian, angle_ue, threshold); 
             
         elseif pathexists_1 && pathexists_2 && size_check~=1 % Both side has 1
             %Parallel Binary Splitting
                         
             [beam_loc, test_n1, n,m, valid_loc_1] = binary_split_5g(total_codebook,n, m, location, valid_loc(1:size_check),size_check, beam_loc, 0, gain_gaussian, angle_ue, threshold);
-            [beam_loc, test_n2, n,m, valid_loc_2] = binary_split_5g(total_codebook,n, m, location, valid_loc(end-hold+1:end),hold, beam_loc, 0, gain_gaussian, angle_ue, threshold);
+            [beam_loc, test_n2, n,m, valid_loc_2] = binary_split_5g(total_codebook,n, m, location, flip(valid_loc(end-hold+1:end)),hold, beam_loc, 0, gain_gaussian, angle_ue, threshold);
             
             %Note that I count one more in binary split. I check the same
             %size again
             n_steps = n_steps + max(test_n1, test_n2)-1;
             valid_loc = [valid_loc_1, valid_loc_2,  valid_loc(size_check +1: end-hold)];
             
-            [beam_loc, n_steps] = parallel_gt_5g_2(total_codebook,n,m, valid_loc, beam_loc, location, n_steps, gain_gaussian, angle_ue, threshold); 
+            [beam_loc, n_steps] = parallel_gt_5g_2(total_codebook,n,m, sort(valid_loc), beam_loc, location, n_steps, gain_gaussian, angle_ue, threshold); 
        
         end
     end

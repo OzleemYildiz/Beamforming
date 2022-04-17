@@ -79,17 +79,9 @@ function [beam_loc, n_steps] = parallel_gt_ack_5g(total_codebook,n,m, valid_loc,
        
         %NACK for the first part of a size of 2^alpha
         %check1 = sum(location(valid_loc(1: size_check)) == 0)== size_check;
-        bf_index = valid_loc(1: size_check);
-        total_index = max(bf_index) - min(bf_index)+1;
-        N_active = total_codebook/total_index;
-        if mod(N_active,1) > 0
-            fprintf('error\n');
-        end
-        
         
         pathexists_1 = beamform_hierarchical(total_codebook,n, valid_loc(1: size_check), gain_gaussian, angle_ue, threshold);
 
-        
 
         %NACK for the second part of a size of 2^alpha
         hold = length(valid_loc(size_check+1: min(2*size_check, end)));

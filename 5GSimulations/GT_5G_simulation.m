@@ -4,7 +4,7 @@ m = 2; %defective, %clusters
 threshold= 0:55;
 
 
-trial = 100;
+trial = 300;
 
 
 %I am not measuring multilevel
