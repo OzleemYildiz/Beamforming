@@ -27,7 +27,7 @@ function [beam_loc, n_steps, snr_2paths, snr_1path, count_2paths,count_1path] = 
         %check_ex_1 = location(ex) == 0; % =0 ,ACK
         
         %Perform beamforming and =1 is ACK
-        [pathexists_1, snr_2paths_1, snr_1path_1, count_2paths_1, count_1path_1] = beamform_sectored(n,n, ex,gain_gaussian, angle_ue, threshold);
+        [pathexists_1, snr_2paths_1, snr_1path_1, count_2paths_1, count_1path_1] = beamform_hierarchical_multi(n,n, ex,gain_gaussian, angle_ue, threshold);
 
 
         if pathexists_1 %ACK
@@ -37,7 +37,7 @@ function [beam_loc, n_steps, snr_2paths, snr_1path, count_2paths,count_1path] = 
         
         if ex+1 <= n
             %check_ex_2 = location(ex+1) == 0; % =0 ,ACK
-            [pathexists_2, snr_2paths_2, snr_1path_2, count_2paths_2,count_1path_2] = beamform_sectored(n,n, ex+1, gain_gaussian, angle_ue, threshold);
+            [pathexists_2, snr_2paths_2, snr_1path_2, count_2paths_2,count_1path_2] = beamform_hierarchical_multi(n,n, ex+1, gain_gaussian, angle_ue, threshold);
 
             %ACK
             if pathexists_2 && m ~=0

@@ -1,4 +1,4 @@
-function pathexists = beamform_hierarchical(total_codebook,n, bf_index,gain_gaussian, angle_ue,threshold)
+function [pathexists, snr_2paths, snr_1path, count_2paths, count_1path] = beamform_hierarchical_multi(total_codebook,n, bf_index,gain_gaussian, angle_ue,threshold)
    
     %This should not happen anyway as well but let's see
     if length(bf_index)==0
@@ -75,7 +75,7 @@ function pathexists = beamform_hierarchical(total_codebook,n, bf_index,gain_gaus
     %Output
     y = channel_matrix*s +w;
         
-%Beam vector calculation
+    %Beam vector calculation
     %Number of active antennas
     if mod(l,2)==0 %If l is even
         N_A=M;
@@ -122,4 +122,27 @@ function pathexists = beamform_hierarchical(total_codebook,n, bf_index,gain_gaus
     else
         pathexists = 1;
     end
+    
+    
+    %Check if real index of UE
+    n_ueloc = locate_AoA_index_hierarchical(angle_ue, total_codebook);
+
+    %Check which AoAs are in the angular interval that we are searching
+   in_out= and(n_ueloc <= max(bf_index) , n_ueloc >= min(bf_index)); 
+    
+   %Addition for Multi-Level measuring
+   %Measure the energy difference when there are two paths in the beam
+   count_2paths = 0; 
+   snr_2paths = 0;
+   snr_1path = 0;
+   count_1path =0;
+   
+   if sum(in_out)>=2  %There are at least two AoAs in the angular interval
+       snr_2paths = res;
+       count_2paths= 1;       
+   elseif sum(in_out)==1 %There is only one AoA in the angular interval
+       snr_1path = res;
+       count_1path = 1;
+   end
+    
 end

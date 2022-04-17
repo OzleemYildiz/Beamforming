@@ -1,7 +1,7 @@
 method =5;
 N = 2.^(3:7);
 m = 2; %defective, %clusters
-threshold= 2:30;
+threshold= 0:55;
 
 
 trial = 100;

@@ -6,7 +6,7 @@
 % level helps us to determine
 
 % I will check for only hybrid exhaustive
-method =1;
+%method =1;
 N = 8:64;
 m = 4; %defective, %clusters
 threshold= 12;
@@ -48,8 +48,8 @@ for k = 1:length(N)
                 %index
 
                 %true_loc = sum(angle_ue' > beam_locs,2)';
-                %true_loc = locate_AoA_index(angle_ue, N);
-                true_loc = sum(angle_ue' > linspace(0, 2*pi, N(k)+1), 2)';
+                true_loc = locate_AoA_index_hierarchical(angle_ue, N(k));
+                %true_loc = sum(angle_ue' > linspace(0, 2*pi, N(k)+1), 2)';
 
                 
                 % Again create a location array for indeces in beamforming 
