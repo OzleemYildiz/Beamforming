@@ -1,4 +1,4 @@
-method =5;
+method =4;
 N = 2.^(3:7);
 m = 2; %defective, %clusters
 threshold= 2:30;
@@ -31,8 +31,6 @@ for k = 1:length(N)
             for tr = 1:trial  
                 total_codebook = N(k);
                 location = zeros(1, N(k));
-                
-%  
                 %Because of ULA antenna array, angles of user is limited to be
                 %in [0, pi]. I should decide allocations and make changes to
                 %search only in this region. 
@@ -67,10 +65,10 @@ for k = 1:length(N)
                       [beam_loc, n_steps] = gt_seperate_5g(total_codebook,m(j), location, gain_gaussian, angle_ue, threshold(i));
                       n_test_fs_gt(j,k,i) = n_test_fs_gt(j,k,i) + n_steps;
                  elseif method==4
-                      [beam_loc, n_steps] = parallel_gt_ack_5g_2(total_codebook,N(k),m(j),1:total_codebook,{}, location,0, gain_gaussian, angle_ue, threshold(i));
+                      [beam_loc, n_steps] = parallel_gt_ack_5g(total_codebook,N(k),m(j),1:total_codebook,{}, location,0, gain_gaussian, angle_ue, threshold(i));
                       n_test_f_ack_gt(j,k,i) = n_test_f_ack_gt(j,k,i) + n_steps;
                  elseif method==5
-                      [beam_loc, n_steps] = parallel_gt_5g_2(total_codebook,N(k),m(j),1:total_codebook,{}, location,0, gain_gaussian, angle_ue, threshold(i));
+                      [beam_loc, n_steps] = parallel_gt_5g(total_codebook,N(k),m(j),1:total_codebook,{}, location,0, gain_gaussian, angle_ue, threshold(i));
                       n_test_f_gt(j,k,i) = n_test_f_gt(j,k,i) + n_steps;
                  end
 

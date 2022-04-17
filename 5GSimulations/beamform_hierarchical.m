@@ -12,6 +12,11 @@ function pathexists = beamform_hierarchical(total_codebook,n, bf_index,gain_gaus
     N_antenna= total_codebook;
     
     total_index = max(bf_index) - min(bf_index)+1;
+    if mod(log2(total_index),1) >0
+        fprintf('error')
+    end
+    
+    
     N_active = total_codebook/total_index;
     
     %We optimize the threshold according to N = 64
@@ -60,7 +65,7 @@ function pathexists = beamform_hierarchical(total_codebook,n, bf_index,gain_gaus
     % dBm-30 = dB  
     s = sqrt(10^((p_tx-30)/10)) ;
     if mod(N_active,1) > 0
-        print('error')
+        fprintf('error\n');
     end
     
     w = sqrt(1/2)*(randn(N_active,1) +1i*randn(N_active, 1));
