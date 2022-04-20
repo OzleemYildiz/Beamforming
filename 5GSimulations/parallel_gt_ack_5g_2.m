@@ -19,11 +19,6 @@ function [beam_loc, n_steps] = parallel_gt_ack_5g_2(total_codebook,n,m, valid_lo
         return
     end
     
-            
-    if length(valid_loc)==0
-        return
-    end
-    
     
     if m <= 0
         return

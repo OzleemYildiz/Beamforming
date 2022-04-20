@@ -1,9 +1,9 @@
 %%
-threshold = -30:70;
+threshold = -20:0.5:60;
 %ratio = 1.1:0.1:2;
 
 % multilevel =1;
-
+tic
 pr_fa= zeros(size(threshold)); % No path but we think there is
 pr_md= zeros(size(threshold)); % Yes path but it should not be
 
@@ -83,14 +83,15 @@ end
 pr_fa = pr_fa./path_nonexist;
 pr_md = pr_md./path_exist;
 
-snr_2paths = snr_2paths./count_2paths;
-snr_1path = snr_1path./count_1path;
+%snr_2paths = snr_2paths./count_2paths;
+%snr_1path = snr_1path./count_1path;
 
 save('pr_fa', 'pr_fa');
 save('pr_md', 'pr_md');
 % save('snr_1path', 'snr_1path');
 % save('snr_2paths', 'snr_2paths');
 
+toc
 % %%
 % figure; 
 % plot(threshold, pr_fa, 'r','Linewidth', 3);

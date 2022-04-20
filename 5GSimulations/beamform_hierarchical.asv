@@ -1,4 +1,4 @@
-function pathexists = beamform_hierarchical(total_codebook,n, bf_index,gain_gaussian, angle_ue,threshold)
+function pathexists = beamform_hierarchical(total_codebook,n, bf_index,gain_gaussian, angle_ue,threshold, multi)
    
     %This should not happen anyway as well but let's see
     if length(bf_index)==0
@@ -108,16 +108,18 @@ function pathexists = beamform_hierarchical(total_codebook,n, bf_index,gain_gaus
     
     %shifting
     beam_vector = beam_vector.*shift;
-    res_beam = beam_vector'*y;
 
-    res= 20*log10(abs(res_beam ));
+    
+       
     
 
-
+    res_beam = beam_vector'*y;
+    
+    res= 20*log10(abs(res_beam ));
+    
     if res <= threshold
         pathexists = 0;
     else
         pathexists = 1;
     end
-
 end

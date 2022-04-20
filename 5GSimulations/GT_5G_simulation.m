@@ -1,11 +1,12 @@
-method =5;
-N = 2.^(3:7);
+method =1;
+N = 64;
 m = 2; %defective, %clusters
-threshold= 0:55;
+threshold= -50:70;
 
+tic
+trial = 100;
 
-trial = 300;
-
+beam_type =1; %sectored, 2 hierarchical
 
 %I am not measuring multilevel
 multilevel= 0;
@@ -58,7 +59,7 @@ for k = 1:length(N)
                 location(true_loc)=1;
                 
                  if method == 1    
-                    [beam_loc, n_steps] = exhaustive_hybrid_5g(total_codebook, m(j), location, gain_gaussian, angle_ue, threshold(i));
+                    [beam_loc, n_steps] = exhaustive_hybrid_5g(total_codebook, m(j), location, gain_gaussian, angle_ue, threshold(i), beam_type);
                     number_of_test_hex(j,k,i) = number_of_test_hex(j,k,i) + n_steps;
                  elseif method ==2
                     [beam_loc, n_steps, valid_loc] = hwang_5g(total_codebook, N(k),m(j), 1:total_codebook,{}, location, 0, 1, gain_gaussian, angle_ue, threshold(i));
@@ -102,6 +103,8 @@ for k = 1:length(N)
     end
 end
 
+toc
+
 number_of_test_hex = number_of_test_hex./trial;
 number_of_test_hwang= number_of_test_hwang./trial;
 n_test_fs_gt = n_test_fs_gt./trial;
@@ -111,9 +114,9 @@ blockage = blockage./trial;
 md = md./trial;
 
 if method == 1
-    save('5gsimulation_ntest_hex_04_16_hierarchical', 'number_of_test_hex')
-    save('5gsimulation_blockage_hex_04_16_hierarchical', 'blockage')
-    save('5gsimulation_md_hex_04_16_hierarchical', 'md')
+    save('5gsimulation_ntest_hex_04_20_sectored', 'number_of_test_hex')
+    save('5gsimulation_blockage_hex_04_20_sectored', 'blockage')
+    save('5gsimulation_md_hex_04_20_sectored', 'md')
 elseif method ==2
     save('5gsimulation_ntest_hwang_04_16_hierarchical', 'number_of_test_hwang')
     save('5gsimulation_blockage_hwang_04_16_hierarchical', 'blockage')

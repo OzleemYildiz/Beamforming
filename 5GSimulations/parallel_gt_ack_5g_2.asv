@@ -7,7 +7,7 @@
 %But how the fuck we generalize this for more  Nrfs??
 
 
-function [beam_loc, n_steps] = parallel_gt_ack_5g_2(total_codebook,n,m, valid_loc, beam_loc, location, n_steps, gain_gaussian, angle_ue, threshold)
+function [beam_loc, n_steps] = parallel_gt_ack_5g_2(total_codebook,n,m, valid_loc, beam_loc, location, n_steps, gain_gaussian, angle_ue, threshold,ratio, multilevel)
 %     if n == m
 %         %Append the locations to check
 %         %But no need to check but I know that all of them are paths
@@ -18,6 +18,12 @@ function [beam_loc, n_steps] = parallel_gt_ack_5g_2(total_codebook,n,m, valid_lo
     if n == 0
         return
     end
+    
+            
+    if length(valid_loc)==0
+        return
+    end
+    
     
     if m <= 0
         return
@@ -87,6 +93,7 @@ function [beam_loc, n_steps] = parallel_gt_ack_5g_2(total_codebook,n,m, valid_lo
         if size_check >length(valid_loc)
             fprintf('error\n');
         end
+
         
         bf_index = valid_loc(1: size_check);
         total_index = max(bf_index) - min(bf_index)+1;
@@ -162,10 +169,12 @@ function [beam_loc, n_steps] = parallel_gt_ack_5g_2(total_codebook,n,m, valid_lo
             
         elseif pathexists_1 && pathexists_2 && size_check~=1 % Both side has 1
             %Parallel Binary Splitting
-                        
-            [beam_loc, test_n1, n,m, valid_loc_1] = binary_split_5g(total_codebook,n, m, location, valid_loc(1:size_check),size_check, beam_loc, 0, gain_gaussian, angle_ue, threshold);
-            [beam_loc, test_n2, n,m, valid_loc_2] = binary_split_5g(total_codebook,n, m, location, flip(valid_loc(end-hold+1:end)),hold, beam_loc, 0, gain_gaussian, angle_ue, threshold);
-            
+            if multilevel
+                
+            else
+                [beam_loc, test_n1, n,m, valid_loc_1] = binary_split_5g(total_codebook,n, m, location, valid_loc(1:size_check),size_check, beam_loc, 0, gain_gaussian, angle_ue, threshold);
+                [beam_loc, test_n2, n,m, valid_loc_2] = binary_split_5g(total_codebook,n, m, location, flip(valid_loc(end-hold+1:end)),hold, beam_loc, 0, gain_gaussian, angle_ue, threshold);
+            end
             %Note that I count one more in binary split. I check the same
             %size again
             n_steps = n_steps + max(test_n1, test_n2)-1;
@@ -196,9 +205,9 @@ function [beam_loc, n_steps] = parallel_gt_ack_5g_2(total_codebook,n,m, valid_lo
                 if pathexists_in==0 %NACK
                
                  if isempty(valid_loc(hold_2+1:end-hold))==0 %Not empty so let me check
-                    size_more = length(valid_loc(hold_2+1:end-hold));
+                    size_more = 2^floor(log2(length(valid_loc(hold_2+1:end-hold))));
                     %check_more = sum(location(valid_loc(hold+1+hold_2:end)) == 0)== size_more; %NACK
-                    pathexists_more = beamform_hierarchical(total_codebook,n, valid_loc(hold_2+1:end-hold), gain_gaussian, angle_ue, threshold);
+                    pathexists_more = beamform_hierarchical(total_codebook,n, flip(valid_loc(end-hold-size_more+1:end-hold)), gain_gaussian, angle_ue, threshold);
                     
                     n_test_in  = n_test_in +1;
                     if pathexists_more==0 % The rest is also NACK
@@ -248,16 +257,16 @@ function [beam_loc, n_steps] = parallel_gt_ack_5g_2(total_codebook,n,m, valid_lo
             
             if hold_2 ~= 0
                 %check_in = sum(location(valid_loc(size_check+1:size_check+hold_2)) == 0)== hold_2;
-                pathexists_in = beamform_hierarchical(total_codebook,n, valid_loc(end-hold_2+1:end), gain_gaussian, angle_ue, threshold);
+                pathexists_in = beamform_hierarchical(total_codebook,n, flip(valid_loc(end-hold_2+1:end)), gain_gaussian, angle_ue, threshold);
 
                 
                 n_test_in = 1;
                 if pathexists_in==0 %NACK
                     
                     if isempty(valid_loc(size_check+1:end-hold_2))==0 %Not empty so let me check
-                        size_more = length(valid_loc(size_check+1:end-hold_2));
+                        size_more = 2^floor(log2(length(valid_loc(size_check+1:end-hold_2))));
                         %check_more = sum(location(valid_loc(size_check+1+hold_2:end)) == 0)== size_more; %NACK
-                        pathexists_more = beamform_hierarchical(total_codebook,n, valid_loc(size_check+1:end-hold_2), gain_gaussian, angle_ue, threshold);
+                        pathexists_more = beamform_hierarchical(total_codebook,n, flip(valid_loc(end-hold_2-size_more+1:end-hold_2)), gain_gaussian, angle_ue, threshold);
                         
                         
                         n_test_in  = n_test_in +1;
@@ -280,7 +289,7 @@ function [beam_loc, n_steps] = parallel_gt_ack_5g_2(total_codebook,n,m, valid_lo
                     
                     
                 else
-                    [beam_loc, test_n_in, n,m, valid_loc_in] = binary_split_5g(total_codebook,n, m, location, valid_loc(end-hold_2+1:end),hold_2, beam_loc, 0, gain_gaussian, angle_ue, threshold);
+                    [beam_loc, test_n_in, n,m, valid_loc_in] = binary_split_5g(total_codebook,n, m, location, flip(valid_loc(end-hold_2+1:end)),hold_2, beam_loc, 0, gain_gaussian, angle_ue, threshold);
                     valid_loc = [valid_loc_2, valid_loc_in, valid_loc(size_check+1:end-hold_2)];
                     n_test_in = n_test_in + test_n_in;
                 end

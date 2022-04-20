@@ -23,7 +23,7 @@ function [beam_loc, n_steps] = exhaustive_hybrid_5g(n, m, location, gain_gaussia
         %Perform beamforming and =1 is ACK
         %[pathexists_1] = beamform_sectored(n,n, ex,gain_gaussian, angle_ue, threshold);
         if beam_type==1
-            [pathexists_1] = beamform_sectored(n,n, ex,gain_gaussian, angle_ue, threshold);
+            [pathexists_1] = beamform_sectoredd(n,n, ex,gain_gaussian, angle_ue, threshold);
         elseif beam_type==2
             [pathexists_1] = beamform_hierarchical(n,n, ex,gain_gaussian, angle_ue, threshold);
         end
@@ -36,12 +36,8 @@ function [beam_loc, n_steps] = exhaustive_hybrid_5g(n, m, location, gain_gaussia
         if ex+1 <= n
             %check_ex_2 = location(ex+1) == 0; % =0 ,ACK
             %[pathexists_2] = beamform_sectored(n,n, ex+1, gain_gaussian, angle_ue, threshold);
-            if beam_type==1                
-                [pathexists_2] = beamform_sectored(n,n, ex+1, gain_gaussian, angle_ue, threshold);
-            elseif beam_type==2
-                [pathexists_2] = beamform_hierarchical(n,n, ex+1, gain_gaussian, angle_ue, threshold);
-            end
-            
+            [pathexists_2] = beamform_hierarchical(n,n, ex+1, gain_gaussian, angle_ue, threshold);
+
             %ACK
             if pathexists_2 && m ~=0
                 beam_loc = [beam_loc, ex+1];

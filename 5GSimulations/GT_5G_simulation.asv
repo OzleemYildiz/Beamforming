@@ -1,9 +1,9 @@
 method =4;
-N = 2.^(3:7);
+N = 64;
 m = 2; %defective, %clusters
-threshold= 2:30;
+threshold= -50:70;
 
-
+tic
 trial = 100;
 
 
@@ -31,6 +31,8 @@ for k = 1:length(N)
             for tr = 1:trial  
                 total_codebook = N(k);
                 location = zeros(1, N(k));
+                
+%  
                 %Because of ULA antenna array, angles of user is limited to be
                 %in [0, pi]. I should decide allocations and make changes to
                 %search only in this region. 
@@ -65,10 +67,10 @@ for k = 1:length(N)
                       [beam_loc, n_steps] = gt_seperate_5g(total_codebook,m(j), location, gain_gaussian, angle_ue, threshold(i));
                       n_test_fs_gt(j,k,i) = n_test_fs_gt(j,k,i) + n_steps;
                  elseif method==4
-                      [beam_loc, n_steps] = parallel_gt_ack_5g(total_codebook,N(k),m(j),1:total_codebook,{}, location,0, gain_gaussian, angle_ue, threshold(i));
+                      [beam_loc, n_steps] = parallel_gt_ack_5g_2(total_codebook,N(k),m(j),1:total_codebook,{}, location,0, gain_gaussian, angle_ue, threshold(i));
                       n_test_f_ack_gt(j,k,i) = n_test_f_ack_gt(j,k,i) + n_steps;
                  elseif method==5
-                      [beam_loc, n_steps] = parallel_gt_5g(total_codebook,N(k),m(j),1:total_codebook,{}, location,0, gain_gaussian, angle_ue, threshold(i));
+                      [beam_loc, n_steps] = parallel_gt_5g_2(total_codebook,N(k),m(j),1:total_codebook,{}, location,0, gain_gaussian, angle_ue, threshold(i));
                       n_test_f_gt(j,k,i) = n_test_f_gt(j,k,i) + n_steps;
                  end
 
@@ -100,33 +102,35 @@ for k = 1:length(N)
     end
 end
 
-number_of_test_hex = number_of_test_hex./trial;
-number_of_test_hwang= number_of_test_hwang./trial;
-n_test_fs_gt = n_test_fs_gt./trial;
-n_test_f_ack_gt = n_test_f_ack_gt./trial;
-n_test_f_gt = n_test_f_gt./trial;
-blockage = blockage./trial;
-md = md./trial;
+toc
 
-if method == 1
-    save('5gsimulation_ntest_hex_04_16_hierarchical', 'number_of_test_hex')
-    save('5gsimulation_blockage_hex_04_16_hierarchical', 'blockage')
-    save('5gsimulation_md_hex_04_16_hierarchical', 'md')
-elseif method ==2
-    save('5gsimulation_ntest_hwang_04_16_hierarchical', 'number_of_test_hwang')
-    save('5gsimulation_blockage_hwang_04_16_hierarchical', 'blockage')
-    save('5gsimulation_md_hwang_04_16_hierarchical', 'md')
-elseif method ==3
-    save('5gsimulation_ntest_fs_gt_04_16_hierarchical', 'n_test_fs_gt')
-    save('5gsimulation_blockage_fs_gt_04_16_hierarchical', 'blockage')
-    save('5gsimulation_md_fs_gt_04_16_hierarchical', 'md')
-elseif method ==4
-    save('5gsimulation_ntest_f_ack_gt_04_16_hierarchical', 'n_test_f_ack_gt')
-    save('5gsimulation_blockage_f_ack_gt_04_16_hierarchical', 'blockage')
-    save('5gsimulation_md_f_ack_gt_04_16_hierarchical', 'md')
-elseif method ==5
-    save('5gsimulation_ntest_f_gt_04_16_hierarchical', 'n_test_f_gt')
-    save('5gsimulation_blockage_f_gt_04_16_hierarchical', 'blockage')
-    save('5gsimulation_md_f_gt_04_16_hierarchical', 'md')
-end
-
+% number_of_test_hex = number_of_test_hex./trial;
+% number_of_test_hwang= number_of_test_hwang./trial;
+% n_test_fs_gt = n_test_fs_gt./trial;
+% n_test_f_ack_gt = n_test_f_ack_gt./trial;
+% n_test_f_gt = n_test_f_gt./trial;
+% blockage = blockage./trial;
+% md = md./trial;
+% 
+% if method == 1
+%     save('5gsimulation_ntest_hex_04_16_hierarchical', 'number_of_test_hex')
+%     save('5gsimulation_blockage_hex_04_16_hierarchical', 'blockage')
+%     save('5gsimulation_md_hex_04_16_hierarchical', 'md')
+% elseif method ==2
+%     save('5gsimulation_ntest_hwang_04_16_hierarchical', 'number_of_test_hwang')
+%     save('5gsimulation_blockage_hwang_04_16_hierarchical', 'blockage')
+%     save('5gsimulation_md_hwang_04_16_hierarchical', 'md')
+% elseif method ==3
+%     save('5gsimulation_ntest_fs_gt_04_16_hierarchical', 'n_test_fs_gt')
+%     save('5gsimulation_blockage_fs_gt_04_16_hierarchical', 'blockage')
+%     save('5gsimulation_md_fs_gt_04_16_hierarchical', 'md')
+% elseif method ==4
+%     save('5gsimulation_ntest_f_ack_gt_04_16_hierarchical', 'n_test_f_ack_gt')
+%     save('5gsimulation_blockage_f_ack_gt_04_16_hierarchical', 'blockage')
+%     save('5gsimulation_md_f_ack_gt_04_16_hierarchical', 'md')
+% elseif method ==5
+%     save('5gsimulation_ntest_f_gt_04_16_hierarchical', 'n_test_f_gt')
+%     save('5gsimulation_blockage_f_gt_04_16_hierarchical', 'blockage')
+%     save('5gsimulation_md_f_gt_04_16_hierarchical', 'md')
+% end
+% 

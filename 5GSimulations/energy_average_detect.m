@@ -7,10 +7,10 @@
 
 % I will check for only hybrid exhaustive
 %method =1;
-N = 8:64;
+N = 2.^(3:7);
 m = 4; %defective, %clusters
 threshold= 12;
-
+tic
 %Multilevel initalization
 count_2paths = zeros(length(N),1);
 count_1path = zeros(length(N),1);
@@ -79,7 +79,7 @@ for k = 1:length(N)
     end
 end
 
-
+toc
 snr_1path = snr_1path./count_1path;
 snr_2paths = snr_2paths./count_2paths;
 
