@@ -1,4 +1,4 @@
-function pathexists = beamform(total_codebook,n, bf_index,gain_gaussian, angle_ue,threshold)
+function pathexists = beamform_dft(total_codebook,n, bf_index,gain_gaussian, angle_ue,threshold)
    
     %This should not happen anyway as well but let's see
     if length(bf_index)==0
@@ -47,7 +47,7 @@ function pathexists = beamform(total_codebook,n, bf_index,gain_gaussian, angle_u
     n = sum(angle_ue' > linspace(-pi/2, pi/2, N_antenna+1), 2)';
     theta = -1 + (2*n-1)/ N_antenna;
     
-    ant_steer = exp(-1i*2*pi*d*theta.*(0:N_antenna-1)'/lambda)/sqrt(N_antenna); %Sundeep Lec8-30
+    ant_steer = exp(1i*2*pi*d*theta.*(0:N_antenna-1)'/lambda)/sqrt(N_antenna); %Sundeep Lec8-30
 
 
     %gain* steering vector and summed
@@ -89,8 +89,11 @@ function pathexists = beamform(total_codebook,n, bf_index,gain_gaussian, angle_u
 %     
 %     beam_vector = beam_dft(:,bf_index).*exp(-1i*2*pi*shift.*(0:N_antenna-1)');
 %     
-    beam_vector = sum(exp(-1i*2*pi/N_antenna.*(bf_index - (N_antenna+1)./2).*(0:N_antenna-1)')/sqrt(N_antenna),2)/sqrt(length(bf_index));
+%     beam_vector = sum(exp(-1i*2*pi/N_antenna.*(bf_index - (N_antenna+1)./2).*(0:N_antenna-1)')/sqrt(N_antenna),2)/sqrt(length(bf_index));
 
+    beam_dft = dftmtx(N_antenna)/sqrt(N_antenna);    
+    beam_dft = circshift(beam_dft, [2, -N_antenna/2-1]);
+    beam_vector = beam_dft(:,bf_index);
 
     res_beam = beam_vector'*y;
     

@@ -19,12 +19,19 @@ function pathexists = beamform_hierarchical(total_codebook,n, bf_index,gain_gaus
     
     N_active = total_codebook/total_index;
     
+    %% Try doubling the antenna and getting rid of the overlapped area
+    
+    
+    N_active = N_active*2;
+    
     %We optimize the threshold according to N = 64
     threshold = threshold*sqrt(N_active/64);
     
     %For the grouped model indexing so that we can find the beamforming
     %vector w(k,n) where n is the index and k is the layer 
-    index = mod(min(bf_index),total_index );
+    %index = mod(min(bf_index),total_index );
+    
+    index = bf_index*2-1; % 1,3,5,7 .. use for 1,2,3,4
     
     kth_layer = log2(N_active);
     
@@ -101,7 +108,7 @@ function pathexists = beamform_hierarchical(total_codebook,n, bf_index,gain_gaus
     angle_shift = -2*(index-1)/N_active ; 
     
     if rem(min(bf_index), total_index)
-      angle_shift = -2*(index-1)/N_s - 2/64*(min(bf_index)-1);  
+      angle_shift = -2*(index-1)/N_active - 2/64*(min(bf_index)-1);  
     end
     
     shift = sqrt(N_active).*exp(1i.*2.*pi.*d.*angle_shift.*(0:N_active-1)'./lambda)./sqrt(N_active);

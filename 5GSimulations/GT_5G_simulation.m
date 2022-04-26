@@ -4,9 +4,9 @@ m = 2; %defective, %clusters
 threshold= -50:70;
 
 tic
-trial = 100;
+trial = 1000;
 
-beam_type =1; %sectored, 2 hierarchical
+beam_type =2; %sectored, 2 hierarchical, 3 dft
 
 %I am not measuring multilevel
 multilevel= 0;
@@ -50,8 +50,16 @@ for k = 1:length(N)
                 %true_loc = sum(angle_ue' > linspace(0, 2*pi, N(k)+1), 2)';
 
                 %Locating for Hierarchical Codebook
-                true_loc = locate_AoA_index_hierarchical(angle_ue, N(k));
-                
+                if beam_type ==1 %Sectored
+                    true_loc = sum(angle_ue' > linspace(0, 2*pi, N(k)+1), 2)';
+                    if true_loc >32
+                        fprintf('error')
+                    end
+                elseif beam_type ==2 %Hierarchical
+                    true_loc = locate_AoA_index_hierarchical(angle_ue, N(k));
+                elseif beam_type ==3  %DFT   
+                    true_loc = locate_AoA_index(angle_ue, N(k));
+                end
                 
                 %2*0.89/N is the beamwidth of [0,2*pi],thats why N/2 is the
                 %codebook for[0, pi]    
@@ -114,9 +122,15 @@ blockage = blockage./trial;
 md = md./trial;
 
 if method == 1
-    save('5gsimulation_ntest_hex_04_20_sectored', 'number_of_test_hex')
-    save('5gsimulation_blockage_hex_04_20_sectored', 'blockage')
-    save('5gsimulation_md_hex_04_20_sectored', 'md')
+    if beam_type==1
+        save('5gsimulation_ntest_hex_04_21_sectored', 'number_of_test_hex')
+        save('5gsimulation_blockage_hex_04_21_sectored', 'blockage')
+        save('5gsimulation_md_hex_04_21_sectored', 'md')
+    else
+        save('5gsimulation_ntest_hex_04_21_hierarchical', 'number_of_test_hex')
+        save('5gsimulation_blockage_hex_04_21_hierarchical', 'blockage')
+        save('5gsimulation_md_hex_04_21_hierarchical', 'md')
+    end
 elseif method ==2
     save('5gsimulation_ntest_hwang_04_16_hierarchical', 'number_of_test_hwang')
     save('5gsimulation_blockage_hwang_04_16_hierarchical', 'blockage')
