@@ -6,7 +6,7 @@ threshold= -50:70;
 tic
 trial = 1000;
 
-beam_type =2; %sectored, 2 hierarchical, 3 dft
+beam_type =3; %sectored, 2 hierarchical, 3 dft
 
 %I am not measuring multilevel
 multilevel= 0;
@@ -123,13 +123,17 @@ md = md./trial;
 
 if method == 1
     if beam_type==1
-        save('5gsimulation_ntest_hex_04_21_sectored', 'number_of_test_hex')
-        save('5gsimulation_blockage_hex_04_21_sectored', 'blockage')
-        save('5gsimulation_md_hex_04_21_sectored', 'md')
-    else
-        save('5gsimulation_ntest_hex_04_21_hierarchical', 'number_of_test_hex')
-        save('5gsimulation_blockage_hex_04_21_hierarchical', 'blockage')
-        save('5gsimulation_md_hex_04_21_hierarchical', 'md')
+        save('5gsimulation_ntest_hex_04_26_sectored', 'number_of_test_hex')
+        save('5gsimulation_blockage_hex_04_26_sectored', 'blockage')
+        save('5gsimulation_md_hex_04_26_sectored', 'md')
+    elseif beam_type==2
+        save('5gsimulation_ntest_hex_04_26_hierarchical', 'number_of_test_hex')
+        save('5gsimulation_blockage_hex_04_26_hierarchical', 'blockage')
+        save('5gsimulation_md_hex_04_26_hierarchical', 'md')
+     elseif beam_type==3
+        save('5gsimulation_ntest_hex_04_26_dft', 'number_of_test_hex')
+        save('5gsimulation_blockage_hex_04_26_dft', 'blockage')
+        save('5gsimulation_md_hex_04_26_dft', 'md')
     end
 elseif method ==2
     save('5gsimulation_ntest_hwang_04_16_hierarchical', 'number_of_test_hwang')
