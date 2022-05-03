@@ -1,7 +1,7 @@
  % Original method from the paper
 % With channel model
 
-function [beam_loc, n_steps, valid_loc] = hwang_5g(total_codebook,n,m, valid_loc, beam_loc, location, n_steps, sp, gain_gaussian, angle_ue, threshold)
+function [beam_loc, n_steps, valid_loc] = hwang_5g(total_codebook,n,m, valid_loc, beam_loc, location, n_steps, sp, gain_gaussian, angle_ue, threshold, beam_type)
 
 %     if n == m
 %         %Append the locations to check
@@ -45,9 +45,12 @@ function [beam_loc, n_steps, valid_loc] = hwang_5g(total_codebook,n,m, valid_loc
            
             %check_ex = location(valid_loc(ex)) == 0; %=0 ACK
             
-            %pathexists_1 = beamform_sectored(total_codebook, n, valid_loc(ex), gain_gaussian, angle_ue, threshold);
-            pathexists_1 = beamform_hierarchical(total_codebook, n, valid_loc(ex), gain_gaussian, angle_ue, threshold);
- 
+            if beam_type == 1
+                pathexists_1 = beamform_sectored(total_codebook, n, valid_loc(ex), gain_gaussian, angle_ue, threshold);
+            elseif beam_type == 2
+                pathexists_1 = beamform_hierarchical(total_codebook, n, valid_loc(ex), gain_gaussian, angle_ue, threshold);
+            end
+            
             n_steps = n_steps +1;
             n= n-1;
 
@@ -75,10 +78,12 @@ function [beam_loc, n_steps, valid_loc] = hwang_5g(total_codebook,n,m, valid_loc
         %check1 = sum(location(valid_loc(1: size_check)) == 0)== size_check; 
         
         %=1 when ACK
-        %pathexists1 = beamform_sectored(total_codebook, n, valid_loc(1: size_check), gain_gaussian, angle_ue, threshold);
         
-        pathexists1 = beamform_hierarchical(total_codebook, n, valid_loc(1: size_check), gain_gaussian, angle_ue, threshold);
-
+        if beam_type ==1
+            pathexists1 = beamform_sectored(total_codebook, n, valid_loc(1: size_check), gain_gaussian, angle_ue, threshold);
+        elseif beam_type==2
+            pathexists1 = beamform_hierarchical(total_codebook, n, valid_loc(1: size_check), gain_gaussian, angle_ue, threshold);
+        end
         n_steps = n_steps + 1;
         
         
@@ -87,22 +92,22 @@ function [beam_loc, n_steps, valid_loc] = hwang_5g(total_codebook,n,m, valid_loc
             valid_loc = valid_loc(size_check+1: end);
             n = n-size_check;
             
-            [beam_loc, n_steps, valid_loc] = hwang_5g(total_codebook, n,m, valid_loc, beam_loc, location, n_steps, sp, gain_gaussian, angle_ue, threshold); 
+            [beam_loc, n_steps, valid_loc] = hwang_5g(total_codebook, n,m, valid_loc, beam_loc, location, n_steps, sp, gain_gaussian, angle_ue, threshold, beam_type); 
      
                 
         else
             %Parallel Binary Splitting
             
-            [beam_loc, test_n1, n,m, valid_loc_1] = binary_split_5g(total_codebook, n, m, location, valid_loc(1:size_check) ,size_check, beam_loc, 0, gain_gaussian, angle_ue, threshold);
-            if test_n1 > alpha +1
-                ozzy = 1;
-            end
+            [beam_loc, test_n1, n,m, valid_loc_1] = binary_split_5g(total_codebook, n, m, location, valid_loc(1:size_check) ,size_check, beam_loc, 0, gain_gaussian, angle_ue, threshold, beam_type);
+%             if test_n1 > alpha +1
+%                 ozzy = 1;
+%             end
             valid_loc = [valid_loc_1, valid_loc(size_check+1:end)];
             %Note that I count one more in binary split. I check the same
             %size again
             n_steps = n_steps +test_n1-1;
       
-            [beam_loc, n_steps, valid_loc] = hwang_5g(total_codebook,n,m, valid_loc, beam_loc, location, n_steps, sp, gain_gaussian, angle_ue, threshold); 
+            [beam_loc, n_steps, valid_loc] = hwang_5g(total_codebook,n,m, valid_loc, beam_loc, location, n_steps, sp, gain_gaussian, angle_ue, threshold, beam_type); 
        
         end
     end

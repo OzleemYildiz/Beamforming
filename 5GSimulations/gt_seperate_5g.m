@@ -2,7 +2,7 @@
 
 %Seperate parallel group testing operations in different RF-chains
 
-function [beam_loc, n_steps] = gt_seperate_5g(n, m, location, gain_gaussian, angle_ue, threshold, n_rf)
+function [beam_loc, n_steps] = gt_seperate_5g(n, m, location, gain_gaussian, angle_ue, threshold, beam_type, n_rf)
     
     beam_loc ={};
     n_steps= zeros(1,n_rf);
@@ -14,7 +14,7 @@ function [beam_loc, n_steps] = gt_seperate_5g(n, m, location, gain_gaussian, ang
     for i=1:n_rf
         n_search_current= min(i*n_search,n)-(i-1)*n_search;
         ind = (1+(i-1)*n_search):min(i*n_search,n);
-        [beam_loc_1, n_steps(i), valid_loc1] = hwang_5g(n,n_search_current ,m_search,ind ,{}, location, 0, 1, gain_gaussian, angle_ue, threshold);
+        [beam_loc_1, n_steps(i), valid_loc1] = hwang_5g(n,n_search_current ,m_search,ind ,{}, location, 0, 1, gain_gaussian, angle_ue, threshold, beam_type);
         beam_loc = [beam_loc, beam_loc_1];
         valid_loc = [valid_loc,valid_loc1];
         
@@ -44,7 +44,7 @@ function [beam_loc, n_steps] = gt_seperate_5g(n, m, location, gain_gaussian, ang
     if tot_beam ~= m && size(cell2mat(valid_loc),2) > 0
         rest_m = m - tot_beam;
         rest_n= size(ind_last,2);
-        [beam_loc_3, n_steps_last, ~] = hwang_5g(n,rest_n, rest_m,ind_last,{}, location, 0, 1, gain_gaussian, angle_ue, threshold);
+        [beam_loc_3, n_steps_last, ~] = hwang_5g(n,rest_n, rest_m,ind_last,{}, location, 0, 1, gain_gaussian, angle_ue, threshold, beam_type);
 
     %         if ceil(m/2) == size(cell2mat(beam_loc_1),2)
     %             [beam_loc_3, n_steps_3, ~] = hwang_5g(n,size(valid_loc1,2), rest,valid_loc1,{}, location, 0, 1, gain_gaussian, angle_ue, threshold);

@@ -1,15 +1,15 @@
 %method =1 (exhaustive), 2 (AGTBA), 3 (HGTBA_1),  4 (HGTBA_3), 5 (HGTBA_2)
 method =3;
 N = 2.^(3:6); %Number of angular intervals
-m = 2; %defective, %clusters
+m = 3; %defective, %clusters
 threshold=-10:30; %SNR
 
 tic
-trial = 100;
+trial = 10000;
 
 beam_type =1; %sectored, 2 hierarchical, 3 dft
 
-n_rf = 3; %method 1 and 3 have the option
+n_rf = 4; %method 1 and 3 have the option
 
 %I am not measuring multilevel
 multilevel= 0;
@@ -56,7 +56,7 @@ for k = 1:length(N)
                 if beam_type ==1 %Sectored
                     true_loc = sum(angle_ue' > linspace(0, 2*pi, N(k)+1), 2)';
                     if true_loc >32
-                        fprintf('error')
+                        fprintf('error\n');
                     end
                 elseif beam_type ==2 %Hierarchical
                     true_loc = locate_AoA_index_hierarchical(angle_ue, N(k));
@@ -73,10 +73,10 @@ for k = 1:length(N)
                     [beam_loc, n_steps] = exhaustive_hybrid_5g(total_codebook, m(j), location, gain_gaussian, angle_ue, threshold(i), beam_type, n_rf);
                     number_of_test_hex(j,k,i) = number_of_test_hex(j,k,i) + n_steps;
                  elseif method ==2
-                    [beam_loc, n_steps, valid_loc] = hwang_5g(total_codebook, N(k),m(j), 1:total_codebook,{}, location, 0, 1, gain_gaussian, angle_ue, threshold(i));
+                    [beam_loc, n_steps, valid_loc] = hwang_5g(total_codebook, N(k),m(j), 1:total_codebook,{}, location, 0, 1, gain_gaussian, angle_ue, threshold(i), beam_type);
                      number_of_test_hwang(j,k,i) = number_of_test_hwang(j,k,i) + n_steps;
                  elseif method==3
-                      [beam_loc, n_steps] = gt_seperate_5g(total_codebook,m(j), location, gain_gaussian, angle_ue, threshold(i), n_rf);
+                      [beam_loc, n_steps] = gt_seperate_5g(total_codebook,m(j), location, gain_gaussian, angle_ue, threshold(i),beam_type, n_rf);
                       n_test_fs_gt(j,k,i) = n_test_fs_gt(j,k,i) + n_steps;
                  elseif method==4
                       [beam_loc, n_steps] = parallel_gt_ack_5g_2(total_codebook,N(k),m(j),1:total_codebook,{}, location,0, gain_gaussian, angle_ue, threshold(i));

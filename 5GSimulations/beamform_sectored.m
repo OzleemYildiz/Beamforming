@@ -34,12 +34,12 @@ function [pathexists, snr_2paths, snr_1path, count_2paths, count_1path] = beamfo
     n_ueloc = sum(angle_ue' > linspace(0, 2*pi, total_codebook+1), 2)';
 
     %Check which AoAs are in the angular interval that we are searching
-    in_out_check= and(n_ueloc <= max(bf_index) , n_ueloc >= min(bf_index));
+    %in_out_check= and(n_ueloc <= max(bf_index) , n_ueloc >= min(bf_index));
     in_out = sum (n_ueloc' == bf_index,2)>0;
     
-    if sum(in_out_check== in_out') ~=length(antenna_gain)
-        fprintf('Error at sectored antenna with the bf power\n')
-    end
+%     if sum(in_out_check== in_out') ~=length(antenna_gain)
+%         fprintf('Error at sectored antenna with the bf power\n')
+%     end
     
     if sum(in_out)>0
         antenna_gain(in_out) = sqrt(N_antenna);
