@@ -1,12 +1,15 @@
-method =1;
-N = 64;
+%method =1 (exhaustive), 2 (AGTBA), 3 (HGTBA_1),  4 (HGTBA_3), 5 (HGTBA_2)
+method =3;
+N = 2.^(3:6); %Number of angular intervals
 m = 2; %defective, %clusters
-threshold= -50:70;
+threshold=-10:30; %SNR
 
 tic
-trial = 1000;
+trial = 100;
 
-beam_type =3; %sectored, 2 hierarchical, 3 dft
+beam_type =1; %sectored, 2 hierarchical, 3 dft
+
+n_rf = 3; %method 1 and 3 have the option
 
 %I am not measuring multilevel
 multilevel= 0;
@@ -67,13 +70,13 @@ for k = 1:length(N)
                 location(true_loc)=1;
                 
                  if method == 1    
-                    [beam_loc, n_steps] = exhaustive_hybrid_5g(total_codebook, m(j), location, gain_gaussian, angle_ue, threshold(i), beam_type);
+                    [beam_loc, n_steps] = exhaustive_hybrid_5g(total_codebook, m(j), location, gain_gaussian, angle_ue, threshold(i), beam_type, n_rf);
                     number_of_test_hex(j,k,i) = number_of_test_hex(j,k,i) + n_steps;
                  elseif method ==2
                     [beam_loc, n_steps, valid_loc] = hwang_5g(total_codebook, N(k),m(j), 1:total_codebook,{}, location, 0, 1, gain_gaussian, angle_ue, threshold(i));
                      number_of_test_hwang(j,k,i) = number_of_test_hwang(j,k,i) + n_steps;
                  elseif method==3
-                      [beam_loc, n_steps] = gt_seperate_5g(total_codebook,m(j), location, gain_gaussian, angle_ue, threshold(i));
+                      [beam_loc, n_steps] = gt_seperate_5g(total_codebook,m(j), location, gain_gaussian, angle_ue, threshold(i), n_rf);
                       n_test_fs_gt(j,k,i) = n_test_fs_gt(j,k,i) + n_steps;
                  elseif method==4
                       [beam_loc, n_steps] = parallel_gt_ack_5g_2(total_codebook,N(k),m(j),1:total_codebook,{}, location,0, gain_gaussian, angle_ue, threshold(i));
@@ -123,33 +126,33 @@ md = md./trial;
 
 if method == 1
     if beam_type==1
-        save('5gsimulation_ntest_hex_04_26_sectored', 'number_of_test_hex')
-        save('5gsimulation_blockage_hex_04_26_sectored', 'blockage')
-        save('5gsimulation_md_hex_04_26_sectored', 'md')
+        save("5gsimulation_ntest_hex_05_03_sectored_nrf" +n_rf+"_m"+m, 'number_of_test_hex')
+        save("5gsimulation_blockage_hex_05_03_sectored_nrf" +n_rf+"_m"+m, 'blockage')
+        save("5gsimulation_md_hex_05_03_sectored_nrf" +n_rf+"_m"+m, 'md')
     elseif beam_type==2
-        save('5gsimulation_ntest_hex_04_26_hierarchical', 'number_of_test_hex')
-        save('5gsimulation_blockage_hex_04_26_hierarchical', 'blockage')
-        save('5gsimulation_md_hex_04_26_hierarchical', 'md')
+        save('5gsimulation_ntest_hex_05_03_hierarchical', 'number_of_test_hex')
+        save('5gsimulation_blockage_hex_05_03_hierarchical', 'blockage')
+        save('5gsimulation_md_hex_05_03_hierarchical', 'md')
      elseif beam_type==3
-        save('5gsimulation_ntest_hex_04_26_dft', 'number_of_test_hex')
-        save('5gsimulation_blockage_hex_04_26_dft', 'blockage')
-        save('5gsimulation_md_hex_04_26_dft', 'md')
+        save('5gsimulation_ntest_hex_05_03_dft', 'number_of_test_hex')
+        save('5gsimulation_blockage_hex_05_03_dft', 'blockage')
+        save('5gsimulation_md_hex_05_03_dft', 'md')
     end
 elseif method ==2
-    save('5gsimulation_ntest_hwang_04_16_hierarchical', 'number_of_test_hwang')
-    save('5gsimulation_blockage_hwang_04_16_hierarchical', 'blockage')
-    save('5gsimulation_md_hwang_04_16_hierarchical', 'md')
+    save('5gsimulation_ntest_hwang_05_03_hierarchical', 'number_of_test_hwang')
+    save('5gsimulation_blockage_hwang_05_03_hierarchical', 'blockage')
+    save('5gsimulation_md_hwang_05_03_hierarchical', 'md')
 elseif method ==3
-    save('5gsimulation_ntest_fs_gt_04_16_hierarchical', 'n_test_fs_gt')
-    save('5gsimulation_blockage_fs_gt_04_16_hierarchical', 'blockage')
-    save('5gsimulation_md_fs_gt_04_16_hierarchical', 'md')
+    save("5gsimulation_ntest_fs_gt_05_03_sectored_nrf" +n_rf+"_m"+m, 'n_test_fs_gt')
+    save("5gsimulation_blockage_fs_gt_05_03_sectored_nrf" +n_rf+"_m"+m, 'blockage')
+    save("5gsimulation_md_fs_gt_05_03_sectored_nrf" +n_rf+"_m"+m, 'md')
 elseif method ==4
-    save('5gsimulation_ntest_f_ack_gt_04_16_hierarchical', 'n_test_f_ack_gt')
-    save('5gsimulation_blockage_f_ack_gt_04_16_hierarchical', 'blockage')
-    save('5gsimulation_md_f_ack_gt_04_16_hierarchical', 'md')
+    save('5gsimulation_ntest_f_ack_gt_05_03_hierarchical', 'n_test_f_ack_gt')
+    save('5gsimulation_blockage_f_ack_gt_05_03_hierarchical', 'blockage')
+    save('5gsimulation_md_f_ack_gt_05_03_hierarchical', 'md')
 elseif method ==5
-    save('5gsimulation_ntest_f_gt_04_16_hierarchical', 'n_test_f_gt')
-    save('5gsimulation_blockage_f_gt_04_16_hierarchical', 'blockage')
-    save('5gsimulation_md_f_gt_04_16_hierarchical', 'md')
+    save('5gsimulation_ntest_f_gt_05_03_hierarchical', 'n_test_f_gt')
+    save('5gsimulation_blockage_f_gt_05_03_hierarchical', 'blockage')
+    save('5gsimulation_md_f_gt_05_03_hierarchical', 'md')
 end
 

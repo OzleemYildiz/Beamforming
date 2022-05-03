@@ -2,11 +2,11 @@
 %function pathexists = beamform(total_codebook, bf_index,gain_gaussian, angle_ue,threshold)
 %indeces will be checked through beamform function instead of putting yes.
 
-function [beam_loc, n_steps] = exhaustive_hybrid_5g(n, m, location, gain_gaussian, angle_ue, threshold, beam_type)
+function [beam_loc, n_steps] = exhaustive_hybrid_5g(n, m, location, gain_gaussian, angle_ue, threshold, beam_type, n_rf)
   
     beam_loc = {};
     n_steps= 0;
-    for ex = 1:2:n
+    for ex = 1:n_rf:n
         if m ==0
             return;
         end 
@@ -35,24 +35,25 @@ function [beam_loc, n_steps] = exhaustive_hybrid_5g(n, m, location, gain_gaussia
             m = m-1;
         end
         
-        if ex+1 <= n
-            %check_ex_2 = location(ex+1) == 0; % =0 ,ACK
-            %[pathexists_2] = beamform_sectored(n,n, ex+1, gain_gaussian, angle_ue, threshold);
-            if beam_type==1                
-                [pathexists_2] = beamform_sectored(n,n, ex+1, gain_gaussian, angle_ue, threshold);
-            elseif beam_type==2
-                [pathexists_2] = beamform_hierarchical(n,n, ex+1, gain_gaussian, angle_ue, threshold);
-            elseif beam_type==3
-                [pathexists_2] = beamform_dft(n,n, ex+1,gain_gaussian, angle_ue, threshold);
-            end
-            
-            %ACK
-            if pathexists_2 && m ~=0
-                beam_loc = [beam_loc, ex+1];
-                m = m-1;
+        for k = 1:n_rf-1
+            if ex+k <= n
+                %check_ex_2 = location(ex+1) == 0; % =0 ,ACK
+                %[pathexists_2] = beamform_sectored(n,n, ex+1, gain_gaussian, angle_ue, threshold);
+                if beam_type==1                
+                    [pathexists_2] = beamform_sectored(n,n, ex+k, gain_gaussian, angle_ue, threshold);
+                elseif beam_type==2
+                    [pathexists_2] = beamform_hierarchical(n,n, ex+k, gain_gaussian, angle_ue, threshold);
+                elseif beam_type==3
+                    [pathexists_2] = beamform_dft(n,n, ex+k,gain_gaussian, angle_ue, threshold);
+                end
+
+                %ACK
+                if pathexists_2 && m ~=0
+                    beam_loc = [beam_loc, ex+k];
+                    m = m-1;
+                end
             end
         end
-               
 
     end
 end
